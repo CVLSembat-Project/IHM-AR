@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class ToggleMenu : MonoBehaviour
 {
-    public Toggle toggle;
-    public GameObject background;
-
-    public void ToggleValueChanged()
+    public void ToggleValueChanged(Toggle toggle)
     {
-        toggle = GetComponent<Toggle>();
-        if (toggle.isOn) background.GetComponentInParent<Renderer>().enabled = false ;
-        else background.GetComponentInParent<Renderer>().enabled = true;
+        //Initialize the background of the application as GameObject and find is Name
+        GameObject background = GameObject.Find("BackgroundMenu");
+        //If toggle is on we get the component as Renderer and we disable is renderer
+        //So the background is Hide
+        if (toggle.isOn) background.GetComponent<Renderer>().enabled = false;
+        //We activate the background
+        else background.GetComponent<Renderer>().enabled = true;
     }
 }
