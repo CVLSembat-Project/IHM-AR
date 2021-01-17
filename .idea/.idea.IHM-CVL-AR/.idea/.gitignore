@@ -1,0 +1,13 @@
+﻿# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/contentModel.xml
+/projectSettingsUpdater.xml
+/.idea.IHM-CVL-AR.iml
+# Datasource local storage ignored files
+/../../../../../../../../../../../../:\Users\Bastien\Dropbox\Mon PC (DracoPc)\Desktop\Cours BTS\Projet\IHM-CVL-AR\.idea\.idea.IHM-CVL-AR\.idea/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
