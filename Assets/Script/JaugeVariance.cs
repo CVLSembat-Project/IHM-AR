@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class JaugeVariance : MonoBehaviour
 {
+    public float speedReduce;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,6 +15,7 @@ public class JaugeVariance : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.localScale += new Vector3(0,-5,0) * Time.deltaTime;
+        if (transform.localScale.y > 0) transform.localScale += new Vector3(0, speedReduce, 0) * Time.deltaTime;
+        else transform.localScale += new Vector3(0, 0, 0);
     }
 }
