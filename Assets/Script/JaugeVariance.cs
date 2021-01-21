@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class JaugeVariance : MonoBehaviour
 {
     public float speedReduce;
@@ -18,4 +19,14 @@ public class JaugeVariance : MonoBehaviour
         if (transform.localScale.y > 0) transform.localScale += new Vector3(0, speedReduce, 0) * Time.deltaTime;
         else transform.localScale += new Vector3(0, 0, 0);
     }
+
+    /*
+     Exemple de récupération de variable : 
+     public bool valuevariableA()
+		{
+			return variableA;
+		}
+         puis dans le script ou l'on souhaite importer la valeur :
+         variableA=GameObject.Find("ObjectquicontientscriptA").GetComponent(lenomdetonscriptA).valuevariableA();
+     */
 }
