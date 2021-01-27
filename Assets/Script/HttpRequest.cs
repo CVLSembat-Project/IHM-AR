@@ -4,33 +4,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
+using SimpleJSON;
 
 public class HttpRequest : MonoBehaviour
 {
-    public Text text; 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
+    public Text text;
+    public string categorie;
+    private IEnumerator coroutine;
+    
     // Update is called once per frame
     void Update()
     {
+        coroutine = WaitAndExecute(Time.deltaTime);
+        StartCoroutine(coroutine);
+    }
+
+    private IEnumerator WaitAndExecute(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        ShowResult();
+    }
+
+    void ShowResult()
+    {
         var task = Task.Run<string>(() =>
         {
-            return DownloadDataAsync();
+            return DownloadDataAsync(categorie);
         });
         text.text = task.Result;
     }
 
-    static async Task<string> DownloadDataAsync()
+    
+    static async Task<string> DownloadDataAsync(string parameter = "")
     {
         // notre cible
-        string page = "http://172.19.127.23/API/hello/Bastien";
+        string page = "http://172.19.127.23/" + parameter;
 
         using (HttpClient client = new HttpClient())
         {
@@ -48,7 +58,10 @@ public class HttpRequest : MonoBehaviour
                 {
                     // récupère la réponse, il ne resterai plus qu'à désérialiser
                     string result = await content.ReadAsStringAsync();
-                    return result;
+                    var Json = JSON.Parse(result);
+                    Debug.Log(Json);
+                    return Json;
+                    
                 }
             }
         }
