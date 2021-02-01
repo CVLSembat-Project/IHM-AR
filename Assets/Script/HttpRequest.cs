@@ -12,19 +12,25 @@ public class HttpRequest : MonoBehaviour
 {
     public Text text;
     public string categorie;
-    private IEnumerator coroutine;
-    
+    private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
+
+    public class Root
+    {
+        public string IDBatiment { get; set; }
+        public string nomBatiment { get; set; }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        coroutine = WaitAndExecute(Time.deltaTime);
-        StartCoroutine(coroutine);
-    }
-
-    private IEnumerator WaitAndExecute(float waitTime)
-    {
-        yield return new WaitForSeconds(waitTime);
-        ShowResult();
+        long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //Take the time of the system
+        if (currentTime - time >= 10*1000) //For make a request every 15s
+        {
+            //After the condition we take the current time to reinit the time
+            time = currentTime;
+            ShowResult();
+        }
+        
     }
 
     void ShowResult()
@@ -58,9 +64,7 @@ public class HttpRequest : MonoBehaviour
                 {
                     // récupère la réponse, il ne resterai plus qu'à désérialiser
                     string result = await content.ReadAsStringAsync();
-                    var Json = JSON.Parse(result);
-                    Debug.Log(Json);
-                    return Json;
+                    return result;
                     
                 }
             }
