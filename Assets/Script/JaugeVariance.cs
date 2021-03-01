@@ -5,28 +5,19 @@ using UnityEngine;
 
 public class JaugeVariance : MonoBehaviour
 {
-    public float speedReduce;
-    // Start is called before the first frame update
-    void Start()
+    public void SetVariance(GameObject jauge, float value, float total)
     {
-        
-        //TODO : Add request HTTP to get value of database
+        float percentage = calculatePercentage(value, total);
+        Vector3 jaugeTransform = jauge.transform.localScale;
+        if (jaugeTransform.y > 0)
+        {
+            jaugeTransform += new Vector3(0, jaugeTransform.y * percentage, 0) * Time.deltaTime;
+        }
+        else jaugeTransform += new Vector3(0, 0, 0);
     }
 
-    // Update is called once per frame
-    void Update()
+    float calculatePercentage(float value, float total)
     {
-        if (transform.localScale.y > 0) transform.localScale += new Vector3(0, speedReduce, 0) * Time.deltaTime;
-        else transform.localScale += new Vector3(0, 0, 0);
+        return (value / total) * 100;
     }
-
-    /*
-     Exemple de récupération de variable : 
-     public bool valuevariableA()
-		{
-			return variableA;
-		}
-         puis dans le script ou l'on souhaite importer la valeur :
-         variableA=GameObject.Find("ObjectquicontientscriptA").GetComponent(lenomdetonscriptA).valuevariableA();
-     */
 }
