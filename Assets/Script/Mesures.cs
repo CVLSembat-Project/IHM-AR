@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Mesures
 {
+    //Class which allow to get JSON Object
     [SerializeField]
     public string nomBatiment { get; set; }
     public float valeur { get; set; }
