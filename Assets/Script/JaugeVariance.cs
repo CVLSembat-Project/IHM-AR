@@ -14,14 +14,16 @@ public class JaugeVariance : MonoBehaviour
      */
     public void SetVariance(GameObject jauge, float value, float total)
     {
-        float percentage = calculatePercentage(value, total);
+        float percentage = 100 - calculatePercentage(value, total);
         Vector3 jaugeTransform = jauge.transform.localScale;
 
         //Condition to verify if the height of the gauge does not exceed 0
         if (jaugeTransform.y > 0)
         {
             //For calculate the height of the gauge 
-            jaugeTransform += new Vector3(0, jaugeTransform.y * percentage, 0) * Time.deltaTime;
+            Debug.Log(percentage);
+            jaugeTransform += new Vector3(0, 0, 0) * Time.deltaTime;
+            Debug.Log(jaugeTransform);
         }
         else jaugeTransform += new Vector3(0, 0, 0);
     }
@@ -37,6 +39,6 @@ public class JaugeVariance : MonoBehaviour
     float calculatePercentage(float value, float total)
     {
         //return a percentage
-        return (value / total) * 100;
+        return (value / total);
     }
 }

@@ -17,9 +17,10 @@ public class WebRequest : MonoBehaviour
     public string categorie;
     public bool unite;
     public Text txt ;
-    public GameObject gameJauge;
+    public Slider slider;
+    //public GameObject gameJauge;
     private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
-    private JaugeVariance jauge = new JaugeVariance();
+    //private JaugeVariance jauge = new JaugeVariance();
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -79,9 +80,10 @@ public class WebRequest : MonoBehaviour
                     else
                     {
                         //Allow to varying the jauge with the value of JSON
-                        jauge.SetVariance(gameJauge, mesure.valeur, mesure.MesureTotal);
+                        //jauge.SetVariance(mesure.valeur, mesure.MesureTotal);
+                        slider.value = mesure.valeur;
                         txt.text = mesure.valeur.ToString() + " " + mesure.unite;
-                        Debug.Log(pages[page] + ":\nReceived : " + mesure.MesureTotal.ToString());
+                        Debug.Log(pages[page] + ":\nReceived : " + mesure.valeur.ToString());
                     }
                         
                 }
