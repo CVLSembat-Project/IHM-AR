@@ -16,11 +16,14 @@ public class WebRequest : MonoBehaviour
     private const string URL = "http://172.19.6.102/API/";
     public string categorie;
     public bool unite;
-    public Text txt ;
+    public Text txt;
     public Slider slider;
-    //public GameObject gameJauge;
     private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
-    //private JaugeVariance jauge = new JaugeVariance();
+
+    //Field where we get value of JSON
+    public int batimentCount { get; set; }
+    public string nameOfBatiment { get; set; }
+    public float[] percentageOfBatiments {get; set;}
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -79,11 +82,13 @@ public class WebRequest : MonoBehaviour
                     }
                     else
                     {
-                        //Allow to varying the jauge with the value of JSON
-                        //jauge.SetVariance(mesure.valeur, mesure.MesureTotal);
+                        //Allow to varying the slider with the value of JSON
                         slider.value = mesure.valeur;
                         txt.text = mesure.valeur.ToString() + " " + mesure.unite;
                         Debug.Log(pages[page] + ":\nReceived : " + mesure.valeur.ToString());
+                        batimentCount = mesure.nbBatiments;
+                        nameOfBatiment = mesure.nomBatiment;
+                        percentageOfBatiments = mesure.pourcentage;
                     }
                         
                 }
