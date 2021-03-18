@@ -9,13 +9,14 @@ using System.Collections.Generic;
 
 
 
+
+
 public class WebRequest : MonoBehaviour
 {
     //Initialize field
     //Most of variables are in public for get access in Unity
     private const string URL = "http://172.19.6.102/API/";
     public string categorie;
-    public bool unite;
     public Text txt;
     public Slider slider;
     private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
@@ -28,6 +29,11 @@ public class WebRequest : MonoBehaviour
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
 
+    void Awake()
+    {
+        StartCoroutine(GetRequest(URL + categorie));
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -36,9 +42,8 @@ public class WebRequest : MonoBehaviour
         {
             //After the condition we take the current time to reinit the time
             time = currentTime;
-            print("début de séance de requête");
             //TODO search more information on Coroutine
-            StartCoroutine(GetRequest(URL + categorie,unite));
+            StartCoroutine(GetRequest(URL + categorie));
         }
         
 
@@ -51,7 +56,7 @@ public class WebRequest : MonoBehaviour
      * @param unite : Show if we want to have unite after the value
      * @return : A web Request
     */
-    IEnumerator GetRequest(string uri, bool unite)
+    IEnumerator GetRequest(string uri)
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
@@ -65,7 +70,6 @@ public class WebRequest : MonoBehaviour
 
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                Debug.Log(pages[page] + ": Error" + webRequest.error);
                 txt.text = webRequest.error;
             }
             else
@@ -74,21 +78,27 @@ public class WebRequest : MonoBehaviour
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
                 foreach(Mesures mesure in mesures)
                 {
-                    if (!unite)
+                    switch (categorie)
                     {
-                        Debug.Log(pages[page] + ":\nReceived : " + mesure.nomBatiment);
-                        //We get the name of the batiment
-                        txt.text = "Batiment : " + mesure.nomBatiment;
-                    }
-                    else
-                    {
-                        //Allow to varying the slider with the value of JSON
-                        slider.value = mesure.valeur;
-                        txt.text = mesure.valeur.ToString() + " " + mesure.unite;
-                        Debug.Log(pages[page] + ":\nReceived : " + mesure.valeur.ToString());
-                        batimentCount = mesure.nbBatiments;
-                        nameOfBatiment = mesure.nomBatiment;
-                        percentageOfBatiments = mesure.pourcentage;
+                        case Constante.NAME_BATIMENT :
+                            txt.text = "Batiment : " + mesure.nomBatiment;
+                            Debug.Log("BONJOUR 1");
+                            break;
+
+                        case Constante.ELECTRICITY:
+                        case Constante.WATER:
+                        case Constante.GAZ:
+                            Debug.Log("BONJOUR 2");
+                            slider.value = mesure.valeur;
+                            txt.text = mesure.valeur.ToString() + " " + mesure.unite;
+                            Debug.Log(mesure.valeur);
+                            break;
+
+                        case Constante.NB_BATIMENTS:
+                            Debug.Log("BONJOUR 3");
+                            batimentCount = mesure.nbBatiments;
+                            Debug.Log(mesure.nbBatiments);
+                            break;
                     }
                         
                 }

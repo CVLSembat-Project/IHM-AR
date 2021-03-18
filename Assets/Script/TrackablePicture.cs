@@ -7,14 +7,12 @@ using Vuforia;
 public class TrackablePicture : MonoBehaviour
 {
     public string[] imageToGetResult;
-    public UnityEngine.UI.Image wedgePrefab;
     WebRequest request;
 
     // Start is called before the first frame update
     void Start()
     {
-        Screen.orientation = ScreenOrientation.LandscapeLeft;
-        makeGraph();
+        Screen.orientation = ScreenOrientation.Portrait;
 
     }
 
@@ -29,7 +27,7 @@ public class TrackablePicture : MonoBehaviour
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
                         request.categorie = ""; //Link for percentage electricity
-                        Debug.Log(isTrackingMarker(imageToGetResult[i]));
+                        //Debug.Log(isTrackingMarker(imageToGetResult[i]));
 
                     }
                     break;
@@ -37,7 +35,7 @@ public class TrackablePicture : MonoBehaviour
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
                         request.categorie = ""; //Link for percentage water
-                        Debug.Log(isTrackingMarker(imageToGetResult[i]));
+                        //Debug.Log(isTrackingMarker(imageToGetResult[i]));
 
                     }
                     break;
@@ -45,7 +43,7 @@ public class TrackablePicture : MonoBehaviour
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
                         request.categorie = ""; //Link for percentage gaz
-                        Debug.Log(isTrackingMarker(imageToGetResult[i]));
+                        //Debug.Log(isTrackingMarker(imageToGetResult[i]));
 
                     }
                     break;
@@ -62,20 +60,4 @@ public class TrackablePicture : MonoBehaviour
         return status == TrackableBehaviour.Status.DETECTED;
     }
 
-    void makeGraph()
-    {
-        byte[] red = {100, 100, 100, 0, 0, 0,100 };
-        byte[] green = { 0, 40, 75, 100, 100, 0, 100 };
-        byte[] blue = {0,0,0,0,100,100,100 };
-
-        for (int i = 1; i < request.batimentCount + 1; i++)
-        {
-            UnityEngine.UI.Image newWedge = Instantiate(wedgePrefab) as UnityEngine.UI.Image;
-            newWedge.name = "PieChart" + (char)64 + i;
-            newWedge.transform.SetParent(transform, false);
-            newWedge.color = new Color32(red[i], green[i], blue[i], 0);
-            
-
-        }
-    }
 }
