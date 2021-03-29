@@ -13,5 +13,5 @@ public class Mesures
     public DateTime date { get; set; }
     public float MesureTotal { get; set; }
     public int nbBatiments { get; set; }
-    public float[] pourcentage { get; set; }
+    public float pourcentage { get; set; }
 }

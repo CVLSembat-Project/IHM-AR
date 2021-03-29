@@ -17,14 +17,14 @@ public class WebRequest : MonoBehaviour
     //Most of variables are in public for get access in Unity
     private const string URL = "http://172.19.6.102/API/";
     public string categorie;
-    public Text txt;
+    public Text textOfElements;
     public Slider slider;
     private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
 
     //Field where we get value of JSON
-    public int batimentCount { get; set; }
-    public string nameOfBatiment { get; set; }
-    public float[] percentageOfBatiments {get; set;}
+    static public int batimentCount;
+    static public string nameOfBatiment;
+    static public List<float> percentageOfBatiments;
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -70,34 +70,34 @@ public class WebRequest : MonoBehaviour
 
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                txt.text = webRequest.error;
+                textOfElements.text = webRequest.error;
             }
             else
             {
                 //Deserialize JSON Object
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
-                foreach(Mesures mesure in mesures)
+                percentageOfBatiments = new List<float>();
+                foreach (Mesures mesure in mesures)
                 {
                     switch (categorie)
                     {
                         case Constante.NAME_BATIMENT :
-                            txt.text = "Batiment : " + mesure.nomBatiment;
-                            Debug.Log("BONJOUR 1");
+                            textOfElements.text = "Batiment : " + mesure.nomBatiment;
                             break;
 
                         case Constante.ELECTRICITY:
                         case Constante.WATER:
                         case Constante.GAZ:
-                            Debug.Log("BONJOUR 2");
                             slider.value = mesure.valeur;
-                            txt.text = mesure.valeur.ToString() + " " + mesure.unite;
-                            Debug.Log(mesure.valeur);
+                            textOfElements.text = mesure.valeur.ToString() + " " + mesure.unite;
                             break;
-
                         case Constante.NB_BATIMENTS:
-                            Debug.Log("BONJOUR 3");
                             batimentCount = mesure.nbBatiments;
-                            Debug.Log(mesure.nbBatiments);
+                            break;
+                        case Constante.PERCENTAGE + "/gaz/7":
+                        //case Constante.PERCENTAGE + "/eau/7":
+                        //case Constante.PERCENTAGE + "/electricite/7":
+                            percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
                             break;
                     }
                         
@@ -106,5 +106,35 @@ public class WebRequest : MonoBehaviour
             }
             
         }
+    }
+
+    public int getBatimentCount()
+    {
+        return batimentCount;
+    }
+
+    public string getNameOfBatiments()
+    {
+        return nameOfBatiment;
+    }
+
+    public List<float> getPercentageOfBatiment()
+    {
+        return percentageOfBatiments;
+    }
+
+    public int setBatimentCount(int value)
+    {
+        return batimentCount = value;
+    }
+
+    public string setNameOfBatiments(string text)
+    {
+        return nameOfBatiment = text;
+    }
+
+    public List<float> setPercentageOfBatiment(List<float> values)
+    {
+        return percentageOfBatiments = values;
     }
 }

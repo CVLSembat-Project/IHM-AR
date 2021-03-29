@@ -8,6 +8,7 @@ public class TrackablePicture : MonoBehaviour
 {
     public string[] imageToGetResult;
     WebRequest request;
+    PieChart chart;
 
     // Start is called before the first frame update
     void Start()
@@ -19,6 +20,7 @@ public class TrackablePicture : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        request = GetComponent<WebRequest>();
         for(int i = 0; i < imageToGetResult.Length; i++)
         {
             switch (imageToGetResult[i])
@@ -26,24 +28,24 @@ public class TrackablePicture : MonoBehaviour
                 case "ImageTargetElectrique" :
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
-                        request.categorie = ""; //Link for percentage electricity
-                        //Debug.Log(isTrackingMarker(imageToGetResult[i]));
+                        request.categorie = Constante.PERCENTAGE + "/electricite/7"; //Link for percentage electricity
+                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
 
                     }
                     break;
                 case "ImageTargetEau":
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
-                        request.categorie = ""; //Link for percentage water
-                        //Debug.Log(isTrackingMarker(imageToGetResult[i]));
-
+                        request.categorie = Constante.PERCENTAGE + "/eau/7"; //Link for percentage water
+                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
+                        
                     }
                     break;
                 case "ImageTargetGaz":
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
-                        request.categorie = ""; //Link for percentage gaz
-                        //Debug.Log(isTrackingMarker(imageToGetResult[i]));
+                        request.categorie = Constante.PERCENTAGE + "/gaz/7"; //Link for percentage gaz
+                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
 
                     }
                     break;
@@ -59,5 +61,6 @@ public class TrackablePicture : MonoBehaviour
         var status = trackable.CurrentStatus;
         return status == TrackableBehaviour.Status.DETECTED;
     }
+
 
 }
