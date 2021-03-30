@@ -22,7 +22,7 @@ public class PieChart : MonoBehaviour
     }
 
     //TODO : Quand on retourne a l'acceuil puis on réappui le diagramme disparaît 
-    public void makeGraph(List<float> values, int numberBatiment)
+    public void makeGraph(List<float> values, int numberBatiment , bool isShowPieChart = true)
     {
         float angle;
         float pSize;
@@ -58,6 +58,8 @@ public class PieChart : MonoBehaviour
             float y = -14f + (100 * Mathf.Cos(angle * Mathf.PI / 180));
 
             textValue.rectTransform.anchoredPosition = new Vector2(x, y);
+            if (!isShowPieChart) gameObject.GetComponent<Renderer>().enabled = false;
+            else gameObject.GetComponent<Renderer>().enabled = true;
 
         }
     }
