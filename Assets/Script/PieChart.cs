@@ -37,16 +37,18 @@ public class PieChart : MonoBehaviour
             newWedge.name = "PieChart" + (char)(65 + i);
             newWedge.rectTransform.anchoredPosition = new Vector2(1f, -14f);
             newWedge.transform.SetParent(parent, false);
-            newWedge.color = new Color32((byte) Random.Range(0,255),(byte) Random.Range(0,255),(byte) Random.Range(0,255),255);
+            //We start the range at 50 to 240 for don't have black and white color
+            newWedge.color = new Color32((byte) Random.Range(50,240),(byte) Random.Range(50,240),(byte) Random.Range(50,240),255);
             newWedge.fillAmount = values[i] / values.Sum();
             newWedge.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, zRotation));
             zRotation -= newWedge.fillAmount * 360f;
 
             textValue = Instantiate(textPrefab) as Text;
-            textValue.text = (char)(65 + i) + " : " + values[i].ToString();  
+            textValue.text = (char)(65 + i) + " : " + values[i].ToString() + " %" ;  
             textValue.rectTransform.anchoredPosition = newWedge.rectTransform.anchoredPosition;
             textValue.transform.SetParent(transform, false);
-            textValue.color = new Color(0, 0, 0);
+            textValue.color = new Color(255 - newWedge.color.r , 255 - newWedge.color.g , 255 - newWedge.color.b);
+
 
             pSize = values[i] / values.Sum() * 360;
             angle = pSize / 2f + calc;
