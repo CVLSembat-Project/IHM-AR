@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class ToggleMenu : MonoBehaviour
 {
+    /**
+     * Description : Use in the main menu for disable the background
+     * @author : <b>Bureau Bastien</b>
+     * @param toggle : Put an object Toggle in this parameter
+     */
     public void ToggleValueChanged(Toggle toggle)
     {
         //Initialize the background of the application as GameObject and find is Name
