@@ -15,7 +15,7 @@ public class WebRequest : MonoBehaviour
 {
     //Initialize field
     //Most of variables are in public for get access in Unity
-    private const string URL = "http://172.19.6.102/API/";
+    private const string URL = "http://192.168.1.15/API/";
     public string categorie;
     public Text textOfElements;
     public Slider slider;
@@ -24,7 +24,8 @@ public class WebRequest : MonoBehaviour
     //Field where we get value of JSON
     static public int batimentCount;
     static public string nameOfBatiment;
-    static public List<float> percentageOfBatiments;
+    public List<float> percentageOfBatiments;
+    public List<string> types;
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -77,27 +78,33 @@ public class WebRequest : MonoBehaviour
                 //Deserialize JSON Object
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
                 percentageOfBatiments = new List<float>();
+                types = new List<string>();
                 foreach (Mesures mesure in mesures)
                 {
                     switch (categorie)
                     {
-                        case Constante.NAME_BATIMENT :
+                       /* case Constante.NAME_BATIMENT :
                             textOfElements.text = "Batiment : " + mesure.nomBatiment;
-                            break;
+                            break;*/
 
                         case Constante.ELECTRICITY:
                         case Constante.WATER:
                         case Constante.GAZ:
                             slider.value = mesure.valeur;
                             textOfElements.text = mesure.valeur.ToString() + " " + mesure.unite;
+                            GameObject.Find("BatimentText").GetComponent<Text>().text = mesure.nomBatiment;
                             break;
                         case Constante.NB_BATIMENTS:
                             batimentCount = mesure.nbBatiments;
                             break;
                         case Constante.PERCENTAGE + "/gaz/7":
-                        //case Constante.PERCENTAGE + "/eau/7":
-                        //case Constante.PERCENTAGE + "/electricite/7":
+                        case Constante.PERCENTAGE + "/eau/7":
+                        case Constante.PERCENTAGE + "/electricite/7":
                             percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                            break;
+                        case Constante.TYPE_PERCENTAGE:
+                            percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                            types.Add(mesure.nomType);
                             break;
                     }
                         

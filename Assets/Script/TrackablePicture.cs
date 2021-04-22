@@ -29,7 +29,7 @@ public class TrackablePicture : MonoBehaviour
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
                         request.categorie = Constante.PERCENTAGE + "/electricite/7"; //Link for percentage electricity
-                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
+                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount(), false);
 
                     }
                     break;
@@ -37,7 +37,7 @@ public class TrackablePicture : MonoBehaviour
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
                         request.categorie = Constante.PERCENTAGE + "/eau/7"; //Link for percentage water
-                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
+                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount(), false);
                         
                     }
                     break;
@@ -45,7 +45,7 @@ public class TrackablePicture : MonoBehaviour
                     if (isTrackingMarker(imageToGetResult[i]))
                     {
                         request.categorie = Constante.PERCENTAGE + "/gaz/7"; //Link for percentage gaz
-                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
+                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount(), false);
 
                     }
                     break;

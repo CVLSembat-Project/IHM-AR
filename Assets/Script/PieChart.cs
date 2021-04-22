@@ -18,11 +18,11 @@ public class PieChart : MonoBehaviour
     void Start()
     {
         WebRequest request = GetComponent<WebRequest>();
-        makeGraph(request.getPercentageOfBatiment(), request.getPercentageOfBatiment().Count);
+        makeGraph(request.getPercentageOfBatiment(), request.getPercentageOfBatiment().Count,true,request.types);
     }
 
     //TODO : Quand on retourne a l'acceuil puis on réappui le diagramme disparaît 
-    public void makeGraph(List<float> values, int numberBatiment , bool isShowPieChart = true)
+    public void makeGraph(List<float> values, int numberBatiment, bool isShowPieChart = true, List<string> textType = null)
     {
         float angle;
         float pSize;
@@ -44,7 +44,8 @@ public class PieChart : MonoBehaviour
             zRotation -= newWedge.fillAmount * 360f;
 
             textValue = Instantiate(textPrefab) as Text;
-            textValue.text = (char)(65 + i) + " : " + values[i].ToString() + " %" ;  
+            textValue.text = textValue.text == null ? (char)(65 + i) + " : " + values[i].ToString() + " %" : textType[i] + " : " + values[i].ToString() + " %";
+            //textValue.text = (char)(65 + i) + " : " + values[i].ToString() + " %" ;  
             textValue.rectTransform.anchoredPosition = newWedge.rectTransform.anchoredPosition;
             textValue.transform.SetParent(transform, false);
             textValue.color = new Color(255 - newWedge.color.r , 255 - newWedge.color.g , 255 - newWedge.color.b);
@@ -58,8 +59,9 @@ public class PieChart : MonoBehaviour
             float y = -14f + (100 * Mathf.Cos(angle * Mathf.PI / 180));
 
             textValue.rectTransform.anchoredPosition = new Vector2(x, y);
-            if (!isShowPieChart) gameObject.GetComponent<Renderer>().enabled = false;
-            else gameObject.GetComponent<Renderer>().enabled = true;
+
+            if (isShowPieChart) gameObject.GetComponent<PieChart>().enabled = true;
+            else gameObject.GetComponent<PieChart>().enabled = false;
 
         }
     }

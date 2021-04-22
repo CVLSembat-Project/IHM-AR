@@ -6,5 +6,6 @@
     public const string WATER = "ConsommationDirecte/eau";
     public const string GAZ = "ConsommationDirecte/gaz";
     public const string PERCENTAGE = "consommationIndirecte/totalParBatiment/pourcentageParBatiment";
+    public const string TYPE_PERCENTAGE = "consommationIndirecte/totalType";
 
 }
