@@ -15,10 +15,11 @@ public class WebRequest : MonoBehaviour
 {
     //Initialize field
     //Most of variables are in public for get access in Unity
-    private const string URL = "http://192.168.1.15/API/";
+    //private const string URL = "http://192.168.1.15/API/";
+    private const string URL = "http://localhost/API/";
     public string categorie;
     public Text textOfElements;
-    public Slider slider;
+    public Slider slider ;
     private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
 
     //Field where we get value of JSON
@@ -65,9 +66,7 @@ public class WebRequest : MonoBehaviour
             webRequest.SetRequestHeader("Content-Type", "application/json");
             yield return webRequest.SendWebRequest();
 
-            //Show the concernated web page
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
+            while (!webRequest.isDone) yield return null;
 
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
@@ -79,33 +78,34 @@ public class WebRequest : MonoBehaviour
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
                 percentageOfBatiments = new List<float>();
                 types = new List<string>();
+                slider = gameObject.GetComponent<Slider>();
+
                 foreach (Mesures mesure in mesures)
                 {
-                    switch (categorie)
+                    if(webRequest.responseCode == 200)
                     {
-                       /* case Constante.NAME_BATIMENT :
-                            textOfElements.text = "Batiment : " + mesure.nomBatiment;
-                            break;*/
-
-                        case Constante.ELECTRICITY:
-                        case Constante.WATER:
-                        case Constante.GAZ:
-                            slider.value = mesure.valeur;
-                            textOfElements.text = mesure.valeur.ToString() + " " + mesure.unite;
-                            GameObject.Find("BatimentText").GetComponent<Text>().text = mesure.nomBatiment;
-                            break;
-                        case Constante.NB_BATIMENTS:
-                            batimentCount = mesure.nbBatiments;
-                            break;
-                        case Constante.PERCENTAGE + "/gaz/7":
-                        case Constante.PERCENTAGE + "/eau/7":
-                        case Constante.PERCENTAGE + "/electricite/7":
-                            percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
-                            break;
-                        case Constante.TYPE_PERCENTAGE:
-                            percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
-                            types.Add(mesure.nomType);
-                            break;
+                        switch (categorie)
+                        {
+                            case Constante.ELECTRICITY:
+                            case Constante.WATER:
+                            case Constante.GAZ:
+                                slider.value = mesure.valeur;
+                                textOfElements.text = mesure.valeur.ToString() + " " + mesure.unite;
+                                GameObject.Find("BatimentText").GetComponent<Text>().text = "Batiment : " + mesure.nomBatiment;
+                                break;
+                            case Constante.NB_BATIMENTS:
+                                batimentCount = mesure.nbBatiments;
+                                break;
+                            case Constante.PERCENTAGE + "/gaz/7":
+                            case Constante.PERCENTAGE + "/eau/7":
+                            case Constante.PERCENTAGE + "/electricite/7":
+                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                break;
+                            case Constante.TYPE_PERCENTAGE:
+                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                types.Add(mesure.nomType);
+                                break;
+                        }
                     }
                         
                 }

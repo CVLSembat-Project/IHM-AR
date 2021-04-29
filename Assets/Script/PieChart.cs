@@ -13,12 +13,14 @@ public class PieChart : MonoBehaviour
     Text percentage;
     int numberBatiment;
     private Text textValue;
+    
 
     // Start is called before the first frame update
     void Start()
     {
         WebRequest request = GetComponent<WebRequest>();
-        makeGraph(request.getPercentageOfBatiment(), request.getPercentageOfBatiment().Count,true,request.types);
+        makeGraph(request.getPercentageOfBatiment(), request.types.Count, true, request.types);
+        Debug.Log("Il y a : " + request.types.Count);
     }
 
     //TODO : Quand on retourne a l'acceuil puis on réappui le diagramme disparaît 
@@ -28,8 +30,6 @@ public class PieChart : MonoBehaviour
         float pSize;
         float calc = 0f;
         float zRotation = 0f;
-
-        //for (int i = 0; i < values.Count; i++) total += values[i];
 
         for (int i = 0; i < numberBatiment; i++)
         {
@@ -45,7 +45,6 @@ public class PieChart : MonoBehaviour
 
             textValue = Instantiate(textPrefab) as Text;
             textValue.text = textValue.text == null ? (char)(65 + i) + " : " + values[i].ToString() + " %" : textType[i] + " : " + values[i].ToString() + " %";
-            //textValue.text = (char)(65 + i) + " : " + values[i].ToString() + " %" ;  
             textValue.rectTransform.anchoredPosition = newWedge.rectTransform.anchoredPosition;
             textValue.transform.SetParent(transform, false);
             textValue.color = new Color(255 - newWedge.color.r , 255 - newWedge.color.g , 255 - newWedge.color.b);
