@@ -7,19 +7,14 @@ using Newtonsoft.Json;
 using static Mesures;
 using System.Collections.Generic;
 
-
-
-
-
 public class WebRequest : MonoBehaviour
 {
     //Initialize field
     //Most of variables are in public for get access in Unity
-    //private const string URL = "http://192.168.1.15/API/";
-    private const string URL = "http://localhost/API/";
+    private const string URL = "http://172.19.6.102/API/";
     public string categorie;
     public Text textOfElements;
-    public Slider slider ;
+    public Slider slider;
     private long time = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //To take time when the variable is init
 
     //Field where we get value of JSON
@@ -44,11 +39,9 @@ public class WebRequest : MonoBehaviour
         {
             //After the condition we take the current time to reinit the time
             time = currentTime;
-            //TODO search more information on Coroutine
+            //Start of an execution of the script
             StartCoroutine(GetRequest(URL + categorie));
         }
-        
-
     }
 
     /**
@@ -65,9 +58,7 @@ public class WebRequest : MonoBehaviour
             //We set an request Header to the website for get the content of the web page
             webRequest.SetRequestHeader("Content-Type", "application/json");
             yield return webRequest.SendWebRequest();
-
             while (!webRequest.isDone) yield return null;
-
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
                 textOfElements.text = webRequest.error;
@@ -76,15 +67,16 @@ public class WebRequest : MonoBehaviour
             {
                 //Deserialize JSON Object
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
+                //Initialization
                 percentageOfBatiments = new List<float>();
                 types = new List<string>();
                 slider = gameObject.GetComponent<Slider>();
 
                 foreach (Mesures mesure in mesures)
                 {
-                    if(webRequest.responseCode == 200)
+                    if (webRequest.responseCode == 200) //If the http response is 200, we get the JSON data from API-REST
                     {
-                        switch (categorie)
+                        switch (categorie) //For sorts the differents path
                         {
                             case Constante.ELECTRICITY:
                             case Constante.WATER:
@@ -107,11 +99,11 @@ public class WebRequest : MonoBehaviour
                                 break;
                         }
                     }
-                        
+
                 }
-   
+
             }
-            
+
         }
     }
 
@@ -128,20 +120,5 @@ public class WebRequest : MonoBehaviour
     public List<float> getPercentageOfBatiment()
     {
         return percentageOfBatiments;
-    }
-
-    public int setBatimentCount(int value)
-    {
-        return batimentCount = value;
-    }
-
-    public string setNameOfBatiments(string text)
-    {
-        return nameOfBatiment = text;
-    }
-
-    public List<float> setPercentageOfBatiment(List<float> values)
-    {
-        return percentageOfBatiments = values;
     }
 }

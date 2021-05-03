@@ -11,9 +11,4 @@ public class SliderVariance : MonoBehaviour
     {
         return slider.value = value;
     }
-
-    float calculPercentage(float value, float valueTotal)
-    {
-        return (value / valueTotal);
-    }
 }
