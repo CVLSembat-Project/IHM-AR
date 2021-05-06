@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class PieChart : MonoBehaviour
 {
     //PieChart's variable
@@ -14,6 +15,8 @@ public class PieChart : MonoBehaviour
     private bool stopUpdate = false;
     
 
+
+
     private void Update()
     {
         if (!stopUpdate) //For create one time a graph
@@ -21,7 +24,7 @@ public class PieChart : MonoBehaviour
             WebRequest request = this.GetComponent<WebRequest>();
             if (request.types.Count > 0)
             {
-                makeGraph(request.getPercentageOfBatiment(), request.types.Count, true, request.types);
+                makeGraph(request.getPercentageOfBatiment(), request.types.Count, request.types);
                 stopUpdate = true;
             }
         }
@@ -36,7 +39,7 @@ public class PieChart : MonoBehaviour
      * @param isShowPieChart : to display the pie chart
      * @param textType : for make a graph with the name of the type of data we get for exemple (electricite, gaz, eau)
      */
-    public void makeGraph(List<float> values, int numberBatiment, bool isShowPieChart = true, List<string> textType = null)
+    public void makeGraph(List<float> values, int numberBatiment, List<string> textType = null)
     {
         float angle;
         float pSize;
@@ -57,7 +60,7 @@ public class PieChart : MonoBehaviour
 
             //Same for the text
             textValue = Instantiate(textPrefab) as Text;
-            textValue.text = textValue.text == null ? (char)(65 + i) + " : " + values[i].ToString() + " %" : textType[i] + " : " + values[i].ToString() + " %";
+            textValue.text = textType == null ? (char)(65 + i) + " : " + values[i].ToString() + " %" : textType[i] + " : " + values[i].ToString() + " %";
             textValue.rectTransform.anchoredPosition = newWedge.rectTransform.anchoredPosition;
             textValue.transform.SetParent(transform, false);
             //For have an opposite color of the pie chart for a better reading of the data
@@ -70,13 +73,7 @@ public class PieChart : MonoBehaviour
 
             float x = 1f + (100 * Mathf.Sin(angle * Mathf.PI / 180));
             float y = -14f + (100 * Mathf.Cos(angle * Mathf.PI / 180));
-
             textValue.rectTransform.anchoredPosition = new Vector2(x, y);
-
-            //For showing the pie chart
-            if (isShowPieChart) gameObject.GetComponent<PieChart>().enabled = true;
-            else gameObject.GetComponent<PieChart>().enabled = false;
-
         }
     }
 }
