@@ -11,7 +11,8 @@ public class WebRequest : MonoBehaviour
 {
     //Initialize field
     //Most of variables are in public for get access in Unity
-    private const string URL = "http://172.19.6.102/API/";
+    static ChangeIP IPAdress;
+    public string URL;
     public string categorie;
     public Text textOfElements;
     public Slider slider;
@@ -28,6 +29,7 @@ public class WebRequest : MonoBehaviour
 
     void Awake()
     {
+        URL = "http://" + PlayerPrefs.GetString("adresse") + "/API/";
         StartCoroutine(GetRequest(URL + categorie));
     }
 
@@ -121,4 +123,5 @@ public class WebRequest : MonoBehaviour
     {
         return percentageOfBatiments;
     }
+
 }
