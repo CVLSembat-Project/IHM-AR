@@ -572,6 +572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8846cd382c22994889907e0dda3a602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IP: 0.0.0.0
   inputFieldObj: {fileID: 1179663164}
 --- !u!1 &597139792
 GameObject:
@@ -1084,7 +1085,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Enter text...
+  m_Text: Adresse du serveur
 --- !u!222 &1145380417
 CanvasRenderer:
   m_ObjectHideFlags: 0
