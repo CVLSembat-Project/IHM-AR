@@ -7,15 +7,12 @@ using Newtonsoft.Json;
 using static Mesures;
 using System.Collections.Generic;
 
-
-
-
-
 public class WebRequest : MonoBehaviour
 {
     //Initialize field
     //Most of variables are in public for get access in Unity
-    private const string URL = "http://172.19.6.102/API/";
+    static ChangeIP IPAdress;
+    public string URL;
     public string categorie;
     public Text textOfElements;
     public Slider slider;
@@ -24,13 +21,15 @@ public class WebRequest : MonoBehaviour
     //Field where we get value of JSON
     static public int batimentCount;
     static public string nameOfBatiment;
-    static public List<float> percentageOfBatiments;
+    public List<float> percentageOfBatiments;
+    public List<string> types;
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
 
     void Awake()
     {
+        URL = "http://" + PlayerPrefs.GetString("adresse") + "/API/";
         StartCoroutine(GetRequest(URL + categorie));
     }
 
@@ -42,11 +41,9 @@ public class WebRequest : MonoBehaviour
         {
             //After the condition we take the current time to reinit the time
             time = currentTime;
-            //TODO search more information on Coroutine
+            //Start of an execution of the script
             StartCoroutine(GetRequest(URL + categorie));
         }
-        
-
     }
 
     /**
@@ -63,11 +60,7 @@ public class WebRequest : MonoBehaviour
             //We set an request Header to the website for get the content of the web page
             webRequest.SetRequestHeader("Content-Type", "application/json");
             yield return webRequest.SendWebRequest();
-
-            //Show the concernated web page
-            string[] pages = uri.Split('/');
-            int page = pages.Length - 1;
-
+            while (!webRequest.isDone) yield return null;
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
                 textOfElements.text = webRequest.error;
@@ -76,35 +69,43 @@ public class WebRequest : MonoBehaviour
             {
                 //Deserialize JSON Object
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
+                //Initialization
                 percentageOfBatiments = new List<float>();
+                types = new List<string>();
+                slider = gameObject.GetComponent<Slider>();
+
                 foreach (Mesures mesure in mesures)
                 {
-                    switch (categorie)
+                    if (webRequest.responseCode == 200) //If the http response is 200, we get the JSON data from API-REST
                     {
-                        case Constante.NAME_BATIMENT :
-                            textOfElements.text = "Batiment : " + mesure.nomBatiment;
-                            break;
-
-                        case Constante.ELECTRICITY:
-                        case Constante.WATER:
-                        case Constante.GAZ:
-                            slider.value = mesure.valeur;
-                            textOfElements.text = mesure.valeur.ToString() + " " + mesure.unite;
-                            break;
-                        case Constante.NB_BATIMENTS:
-                            batimentCount = mesure.nbBatiments;
-                            break;
-                        case Constante.PERCENTAGE + "/gaz/7":
-                        //case Constante.PERCENTAGE + "/eau/7":
-                        //case Constante.PERCENTAGE + "/electricite/7":
-                            percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
-                            break;
+                        switch (categorie) //For sorts the differents path
+                        {
+                            case Constante.ELECTRICITY:
+                            case Constante.WATER:
+                            case Constante.GAZ:
+                                slider.value = mesure.valeur;
+                                textOfElements.text = mesure.valeur.ToString() + " " + mesure.unite;
+                                GameObject.Find("BatimentText").GetComponent<Text>().text = "Batiment : " + mesure.nomBatiment;
+                                break;
+                            case Constante.NB_BATIMENTS:
+                                batimentCount = mesure.nbBatiments;
+                                break;
+                            case Constante.PERCENTAGE + "/gaz/7":
+                            case Constante.PERCENTAGE + "/eau/7":
+                            case Constante.PERCENTAGE + "/electricite/7":
+                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                break;
+                            case Constante.TYPE_PERCENTAGE:
+                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                types.Add(mesure.nomType);
+                                break;
+                        }
                     }
-                        
+
                 }
-   
+
             }
-            
+
         }
     }
 
@@ -123,18 +124,4 @@ public class WebRequest : MonoBehaviour
         return percentageOfBatiments;
     }
 
-    public int setBatimentCount(int value)
-    {
-        return batimentCount = value;
-    }
-
-    public string setNameOfBatiments(string text)
-    {
-        return nameOfBatiment = text;
-    }
-
-    public List<float> setPercentageOfBatiment(List<float> values)
-    {
-        return percentageOfBatiments = values;
-    }
 }

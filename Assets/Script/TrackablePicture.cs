@@ -1,66 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using Vuforia;
 
-public class TrackablePicture : MonoBehaviour
+public class TrackablePicture : DefaultTrackableEventHandler
 {
-    public string[] imageToGetResult;
-    WebRequest request;
     PieChart chart;
+    WebRequest request;
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void OnTrackingFound()
     {
-        Screen.orientation = ScreenOrientation.Portrait;
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        base.OnTrackingFound();
+        chart.enabled = true;
         request = GetComponent<WebRequest>();
-        for(int i = 0; i < imageToGetResult.Length; i++)
-        {
-            switch (imageToGetResult[i])
-            {
-                case "ImageTargetElectrique" :
-                    if (isTrackingMarker(imageToGetResult[i]))
-                    {
-                        request.categorie = Constante.PERCENTAGE + "/electricite/7"; //Link for percentage electricity
-                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
-
-                    }
-                    break;
-                case "ImageTargetEau":
-                    if (isTrackingMarker(imageToGetResult[i]))
-                    {
-                        request.categorie = Constante.PERCENTAGE + "/eau/7"; //Link for percentage water
-                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
-                        
-                    }
-                    break;
-                case "ImageTargetGaz":
-                    if (isTrackingMarker(imageToGetResult[i]))
-                    {
-                        request.categorie = Constante.PERCENTAGE + "/gaz/7"; //Link for percentage gaz
-                        chart.makeGraph(request.getPercentageOfBatiment(), request.getBatimentCount());
-
-                    }
-                    break;
-            }
-        }
-
+        chart = GameObject.Find("PieChartForImageTarget").GetComponent<PieChart>();
+        chart.makeGraph(request.percentageOfBatiments, request.percentageOfBatiments.Count);
     }
 
-    private bool isTrackingMarker(string imageTargetName)
+    protected override void OnTrackingLost()
     {
-        var imageTarget = GameObject.Find(imageTargetName);
-        var trackable = imageTarget.GetComponent<TrackableBehaviour>();
-        var status = trackable.CurrentStatus;
-        return status == TrackableBehaviour.Status.DETECTED;
+        base.OnTrackingLost();
+        chart = GameObject.Find("PieChartForImageTarget").GetComponent<PieChart>();
+        chart.enabled = false;
     }
-
 
 }

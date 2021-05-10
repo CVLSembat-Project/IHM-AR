@@ -14,5 +14,6 @@ public class ChangeScene : MonoBehaviour
     {
         //We get in parameter the Scene name to load it and show it.
         SceneManager.LoadScene(SceneName);
+        
     }
 }
