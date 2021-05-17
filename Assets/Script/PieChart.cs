@@ -14,9 +14,6 @@ public class PieChart : MonoBehaviour
     private Text textValue;
     private bool stopUpdate = false;
     
-
-
-
     private void Update()
     {
         if (!stopUpdate) //For create one time a graph
@@ -24,7 +21,7 @@ public class PieChart : MonoBehaviour
             WebRequest request = this.GetComponent<WebRequest>();
             if (request.types.Count > 0)
             {
-                makeGraph(request.getPercentageOfBatiment(), request.types.Count, request.types);
+                makeGraph(request.getValuesOfBatiments(), request.types.Count, request.types);
                 stopUpdate = true;
             }
         }

@@ -14,7 +14,7 @@ public class TrackablePicture : DefaultTrackableEventHandler
         chart.enabled = true;
         request = GetComponent<WebRequest>();
         chart = GameObject.Find("PieChartForImageTarget").GetComponent<PieChart>();
-        chart.makeGraph(request.percentageOfBatiments, request.percentageOfBatiments.Count);
+        chart.makeGraph(request.valuesOfBatiments, request.valuesOfBatiments.Count);
     }
 
     protected override void OnTrackingLost()

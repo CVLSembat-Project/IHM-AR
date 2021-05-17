@@ -15,26 +15,36 @@ public class WindowGraph : MonoBehaviour
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
+    private WebRequest request;
 
     private void Awake()
     {
         //Get container in unity and initialisation of graph
+        Screen.orientation = ScreenOrientation.Landscape;
         graphContainer = GameObject.Find("GraphContainer").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
+        request = GameObject.Find("Window_Graph").GetComponent<WebRequest>();
 
         gameObjectList = new List<GameObject>();
-        List<int> valueList = new List<int>() { 1,98,55,32,12,34,48,69,89,7,45,55 ,87,47,52,14,29,92,78,47,41,15}; //A changer
-        showGraph(valueList, -1 ,(int _i) => "Day " + (_i + 1) , (float _f) => "$" + Mathf.RoundToInt(_f));
-
-
+        //List<int> valueList = new List<int>() { 1,98,55,32,12,34,48,69,89,7,45,55 ,87,47,52,14,29,92,78,47,41,15}; //A changer
         /*FunctionPeriodic.Create(() => {
             valueList.Clear();
             for (int i = 0; i < 15; i++) valueList.Add(UnityEngine.Random.Range(0, 500));
             showGraph(valueList, (int _i) => "Day " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
         }, .5f);*/
+    }
+
+    private void Start()
+    {
+        if (request.valuesOfBatiments.Count > 0)
+        {
+            Debug.Log(request.valuesOfBatiments[0]);
+            showGraph(request.valuesOfBatiments, -1, (int _i) => "Day " + (_i + 1), (float _f) => Mathf.RoundToInt(_f) + request.unite);
+        }
+        else Debug.Log("Erreur il n'y a rien dans la liste car elle est égale a 0 ou inférieur");
     }
 
     /**
@@ -63,7 +73,7 @@ public class WindowGraph : MonoBehaviour
      * @param getAxisLabelX : get a value IN int and modify the type of the value and have a string in OUT of the function
      * @param getAxisLabelY : same but instead of an int it s a float
      */
-    private void showGraph(List<int> valueList, int maxVisibleValueAmount = -1, Func<int,string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
+    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, Func<int,string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
     {
         //Delegate for convert the type and have a method for the result of the second type
         if (getAxisLabelX == null)getAxisLabelX = delegate (int _i) { return _i.ToString(); };
@@ -85,7 +95,7 @@ public class WindowGraph : MonoBehaviour
 
         for (int i = Mathf.Max(valueList.Count - maxVisibleValueAmount ,0); i < valueList.Count; i++)
         {
-            int value = valueList[i];
+            int value = Mathf.RoundToInt(valueList[i]);
             if (value > yMaximum) yMaximum = value;
             if (value < yMinimum) yMinimum = value;
         }
@@ -105,6 +115,7 @@ public class WindowGraph : MonoBehaviour
         {
             float xPosition = xSize + xIndex * xSize;
             float yPosition = ((valueList[i] - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
+            Debug.Log("la valeur de l'axe y est : " + yPosition);
             GameObject circleGameObject = CreateCircle(new Vector2(xPosition,yPosition));
             gameObjectList.Add(circleGameObject);
 
@@ -142,7 +153,7 @@ public class WindowGraph : MonoBehaviour
             labelY.gameObject.SetActive(true);
             float normalizedValue = i * 1f / separatorCount;
             labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
-            labelY.GetComponent<Text>().text = getAxisLabelY(yMinimum + ( normalizedValue * (yMaximum - yMinimum)));
+            labelY.GetComponent<Text>().text = getAxisLabelY(normalizedValue * yMaximum);
             gameObjectList.Add(labelY.gameObject);
 
             RectTransform dashY = Instantiate(dashTemplateY);

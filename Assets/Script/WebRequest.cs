@@ -21,7 +21,8 @@ public class WebRequest : MonoBehaviour
     //Field where we get value of JSON
     static public int batimentCount;
     static public string nameOfBatiment;
-    public List<float> percentageOfBatiments;
+    public string unite;
+    public List<float> valuesOfBatiments;
     public List<string> types;
 
     //Array to get lot of JSON object
@@ -70,7 +71,7 @@ public class WebRequest : MonoBehaviour
                 //Deserialize JSON Object
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
                 //Initialization
-                percentageOfBatiments = new List<float>();
+                valuesOfBatiments = new List<float>();
                 types = new List<string>();
                 slider = gameObject.GetComponent<Slider>();
 
@@ -93,11 +94,17 @@ public class WebRequest : MonoBehaviour
                             case Constante.PERCENTAGE + "/gaz/7":
                             case Constante.PERCENTAGE + "/eau/7":
                             case Constante.PERCENTAGE + "/electricite/7":
-                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                valuesOfBatiments.Add(Mathf.Round(mesure.pourcentage));
                                 break;
                             case Constante.TYPE_PERCENTAGE:
-                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                valuesOfBatiments.Add(Mathf.Round(mesure.pourcentage));
                                 types.Add(mesure.nomType);
+                                break;
+                            case Constante.GRAPH_GAZ + "/A/7":
+                            case Constante.GRAPH_EAU + "/A/7":
+                            case Constante.GRAPH_ELEC + "/A/7":
+                                valuesOfBatiments.Add(mesure.valeur);
+                                unite = mesure.unite;
                                 break;
                         }
                     }
@@ -119,9 +126,9 @@ public class WebRequest : MonoBehaviour
         return nameOfBatiment;
     }
 
-    public List<float> getPercentageOfBatiment()
+    public List<float> getValuesOfBatiments()
     {
-        return percentageOfBatiments;
+        return valuesOfBatiments;
     }
 
 }
