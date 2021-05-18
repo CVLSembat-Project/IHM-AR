@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class ChangeIP : MonoBehaviour
 {
+    private void Start()
+    {
+        Screen.orientation = ScreenOrientation.Portrait;
+    }
     public string IP = "0.0.0.0";
     public GameObject inputFieldObj;
 

@@ -8,7 +8,7 @@ using CodeMonkey.Utils;
 public class WindowGraph : MonoBehaviour
 {
     //Declaration Field
-    [SerializeField] private Sprite circleSprite; 
+    [SerializeField] private Sprite circleSprite;
     private RectTransform graphContainer;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
@@ -16,6 +16,7 @@ public class WindowGraph : MonoBehaviour
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
     private WebRequest request;
+    private bool stopUpdate = false;
 
     private void Awake()
     {
@@ -29,7 +30,7 @@ public class WindowGraph : MonoBehaviour
         request = GameObject.Find("Window_Graph").GetComponent<WebRequest>();
 
         gameObjectList = new List<GameObject>();
-        //List<int> valueList = new List<int>() { 1,98,55,32,12,34,48,69,89,7,45,55 ,87,47,52,14,29,92,78,47,41,15}; //A changer
+
         /*FunctionPeriodic.Create(() => {
             valueList.Clear();
             for (int i = 0; i < 15; i++) valueList.Add(UnityEngine.Random.Range(0, 500));
@@ -37,14 +38,22 @@ public class WindowGraph : MonoBehaviour
         }, .5f);*/
     }
 
-    private void Start()
+    private void Update()
     {
-        if (request.valuesOfBatiments.Count > 0)
+        if (!stopUpdate)
         {
-            Debug.Log(request.valuesOfBatiments[0]);
-            showGraph(request.valuesOfBatiments, -1, (int _i) => "Day " + (_i + 1), (float _f) => Mathf.RoundToInt(_f) + request.unite);
+            if (request.valuesOfBatiments.Count > 0)
+            {
+                showGraph(request.valuesOfBatiments, -1, (int _i) => "Day " + (_i + 1), (float _f) => Mathf.RoundToInt(_f) + request.unite);
+                Debug.Log("Graphique crée");
+                stopUpdate = true;
+            }
         }
-        else Debug.Log("Erreur il n'y a rien dans la liste car elle est égale a 0 ou inférieur");
+
+        foreach (GameObject gameObject in gameObjectList)
+        {
+            TouchForScrollGraph(gameObject);
+        }
     }
 
     /**
@@ -73,15 +82,17 @@ public class WindowGraph : MonoBehaviour
      * @param getAxisLabelX : get a value IN int and modify the type of the value and have a string in OUT of the function
      * @param getAxisLabelY : same but instead of an int it s a float
      */
-    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, Func<int,string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
+    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
     {
+
+        GameObject dotConnection = null;
         //Delegate for convert the type and have a method for the result of the second type
-        if (getAxisLabelX == null)getAxisLabelX = delegate (int _i) { return _i.ToString(); };
+        if (getAxisLabelX == null) getAxisLabelX = delegate (int _i) { return _i.ToString(); };
         if (getAxisLabelY == null) getAxisLabelY = delegate (float _f) { return Mathf.RoundToInt(_f).ToString(); };
         if (maxVisibleValueAmount <= 0) maxVisibleValueAmount = valueList.Count;
-        
 
-        foreach(GameObject gameObject in gameObjectList)
+
+        foreach (GameObject gameObject in gameObjectList)
         {
             Destroy(gameObject);
         }
@@ -93,7 +104,7 @@ public class WindowGraph : MonoBehaviour
         float yMaximum = valueList[0];
         float yMinimum = valueList[0];
 
-        for (int i = Mathf.Max(valueList.Count - maxVisibleValueAmount ,0); i < valueList.Count; i++)
+        for (int i = Mathf.Max(valueList.Count - maxVisibleValueAmount, 0); i < valueList.Count; i++)
         {
             int value = Mathf.RoundToInt(valueList[i]);
             if (value > yMaximum) yMaximum = value;
@@ -106,30 +117,29 @@ public class WindowGraph : MonoBehaviour
         yMaximum += yDifference * 0.2f;
         yMinimum -= yDifference * 0.2f;
 
-        float xSize = graphWidth / (maxVisibleValueAmount + 1);
+        float xSize = 50f;
         GameObject lastCircleGameObject = null;
 
         int xIndex = 0;
 
-        for(int i = Mathf.Max(valueList.Count - maxVisibleValueAmount, 0); i < valueList.Count; i++)
+        for (int i = Mathf.Max(valueList.Count - maxVisibleValueAmount, 0); i < valueList.Count; i++)
         {
             float xPosition = xSize + xIndex * xSize;
             float yPosition = ((valueList[i] - yMinimum) / (yMaximum - yMinimum)) * graphHeight;
-            Debug.Log("la valeur de l'axe y est : " + yPosition);
-            GameObject circleGameObject = CreateCircle(new Vector2(xPosition,yPosition));
+            GameObject circleGameObject = CreateCircle(new Vector2(xPosition, yPosition));
             gameObjectList.Add(circleGameObject);
 
             //Get the last point and replace the last point by the new point and made link beetwen us
-            if(lastCircleGameObject != null)
+            if (lastCircleGameObject != null)
             {
-                GameObject dotConnection = CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
+                dotConnection = CreateDotConnection(lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition, circleGameObject.GetComponent<RectTransform>().anchoredPosition);
                 gameObjectList.Add(dotConnection);
             }
             lastCircleGameObject = circleGameObject;
 
             //For create each label in the X axis
             RectTransform labelX = Instantiate(labelTemplateX);
-            labelX.SetParent(graphContainer,false);
+            labelX.SetParent(graphContainer, false);
             labelX.gameObject.SetActive(true);
             labelX.anchoredPosition = new Vector2(xPosition, -7f);
             labelX.GetComponent<Text>().text = getAxisLabelX(i); //A changer
@@ -141,15 +151,24 @@ public class WindowGraph : MonoBehaviour
             dashX.gameObject.SetActive(true);
             dashX.anchoredPosition = new Vector2(xPosition, -3f);
             gameObjectList.Add(dashX.gameObject);
+
+            if (xPosition > graphWidth)
+            {
+                circleGameObject.SetActive(false);
+                labelX.gameObject.SetActive(false);
+                dashX.gameObject.SetActive(false);
+                dotConnection.SetActive(false);
+                //50 d'écart en X
+            }
             xIndex++;
         }
 
         int separatorCount = 10; //Will change soon
         //Loop for create Y axis label and dash
-        for(int i = 0; i <= separatorCount; i++)
+        for (int i = 0; i <= separatorCount; i++)
         {
             RectTransform labelY = Instantiate(labelTemplateY);
-            labelY.SetParent(graphContainer,false);
+            labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             float normalizedValue = i * 1f / separatorCount;
             labelY.anchoredPosition = new Vector2(-7f, normalizedValue * graphHeight);
@@ -161,7 +180,9 @@ public class WindowGraph : MonoBehaviour
             dashY.gameObject.SetActive(true);
             dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
             gameObjectList.Add(dashY.gameObject);
+
         }
+
     }
 
     /**
@@ -185,5 +206,35 @@ public class WindowGraph : MonoBehaviour
         rectTransform.anchoredPosition = dotPositionA + direction * distance * 0.5f;
         rectTransform.localEulerAngles = new Vector3(0, 0, UtilsClass.GetAngleFromVectorFloat(direction));
         return gameObject;
+    }
+
+    private void TouchForScrollGraph(GameObject items)
+    {
+        Text text = GameObject.Find("TextForLeftAndRight").GetComponent<Text>();
+        Touch touch;
+        if (Input.touchCount > 0)
+        {
+            touch = Input.GetTouch(0);
+            Debug.Log(touch.position);
+            switch (touch.phase)
+            {
+                case TouchPhase.Moved:
+                    Debug.Log("Position : " + touch.position.x);
+                    Debug.Log("Delta Position : " + touch.deltaPosition.x);
+                    if(touch.position.x < touch.deltaPosition.x)
+                    {
+                        text.text = "Left";
+                        items.transform.Translate(touch.deltaPosition.x * Time.deltaTime *1f,0,0);
+                        Debug.Log("Left");
+                    }
+                    if (touch.position.x > touch.deltaPosition.x)
+                    {
+                        text.text = "Right";
+                        items.transform.Translate(touch.deltaPosition.x * Time.deltaTime *1f,0,0);
+                        Debug.Log("Right");
+                    }
+                    break;
+            }
+        }
     }
 }
