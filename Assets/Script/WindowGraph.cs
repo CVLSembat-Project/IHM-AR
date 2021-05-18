@@ -15,6 +15,7 @@ public class WindowGraph : MonoBehaviour
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
+    private List<GameObject> arrayOfGameObjectToDeplace;
     private WebRequest request;
     private bool stopUpdate = false;
 
@@ -52,7 +53,17 @@ public class WindowGraph : MonoBehaviour
 
         foreach (GameObject gameObject in gameObjectList)
         {
-            TouchForScrollGraph(gameObject);
+            switch (gameObject.name)
+            {
+                case "dashTemplateX":
+                case "dashTemplateY":
+                case "labelTemplateY":
+                    break;
+                default:
+                    TouchForScrollGraph(gameObject);
+                    Debug.Log(gameObject.name);
+                    break;
+            }
         }
     }
 
@@ -147,6 +158,7 @@ public class WindowGraph : MonoBehaviour
 
             //For create the dash 
             RectTransform dashX = Instantiate(dashTemplateX);
+            dashX.name = "dashTemplateX";
             dashX.SetParent(graphContainer, false);
             dashX.gameObject.SetActive(true);
             dashX.anchoredPosition = new Vector2(xPosition, -3f);
@@ -168,6 +180,7 @@ public class WindowGraph : MonoBehaviour
         for (int i = 0; i <= separatorCount; i++)
         {
             RectTransform labelY = Instantiate(labelTemplateY);
+            labelY.name = "labelTemplateY";
             labelY.SetParent(graphContainer, false);
             labelY.gameObject.SetActive(true);
             float normalizedValue = i * 1f / separatorCount;
@@ -176,6 +189,7 @@ public class WindowGraph : MonoBehaviour
             gameObjectList.Add(labelY.gameObject);
 
             RectTransform dashY = Instantiate(dashTemplateY);
+            dashY.name = "dashTemplateY";
             dashY.SetParent(graphContainer, false);
             dashY.gameObject.SetActive(true);
             dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
@@ -210,31 +224,25 @@ public class WindowGraph : MonoBehaviour
 
     private void TouchForScrollGraph(GameObject items)
     {
-        Text text = GameObject.Find("TextForLeftAndRight").GetComponent<Text>();
         Touch touch;
         if (Input.touchCount > 0)
         {
             touch = Input.GetTouch(0);
-            Debug.Log(touch.position);
             switch (touch.phase)
             {
                 case TouchPhase.Moved:
-                    Debug.Log("Position : " + touch.position.x);
-                    Debug.Log("Delta Position : " + touch.deltaPosition.x);
-                    if(touch.position.x < touch.deltaPosition.x)
-                    {
-                        text.text = "Left";
-                        items.transform.Translate(touch.deltaPosition.x * Time.deltaTime *1f,0,0);
-                        Debug.Log("Left");
-                    }
-                    if (touch.position.x > touch.deltaPosition.x)
-                    {
-                        text.text = "Right";
-                        items.transform.Translate(touch.deltaPosition.x * Time.deltaTime *1f,0,0);
-                        Debug.Log("Right");
-                    }
+                    items.transform.Translate(touch.deltaPosition.x, 0, 0 * Time.deltaTime,Space.World);
                     break;
             }
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+           items.transform.Translate(-Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
+        }
+        if (Input.GetMouseButtonDown(1))
+        {
+            items.transform.Translate(Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
         }
     }
 }
