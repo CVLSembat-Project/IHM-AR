@@ -15,9 +15,8 @@ public class WindowGraph : MonoBehaviour
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
-    private List<GameObject> arrayOfGameObjectToDeplace;
     private WebRequest request;
-    private bool stopUpdate = false;
+    public bool stopUpdate = false;
 
     private void Awake()
     {
@@ -31,12 +30,6 @@ public class WindowGraph : MonoBehaviour
         request = GameObject.Find("Window_Graph").GetComponent<WebRequest>();
 
         gameObjectList = new List<GameObject>();
-
-        /*FunctionPeriodic.Create(() => {
-            valueList.Clear();
-            for (int i = 0; i < 15; i++) valueList.Add(UnityEngine.Random.Range(0, 500));
-            showGraph(valueList, (int _i) => "Day " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
-        }, .5f);*/
     }
 
     private void Update()
@@ -45,14 +38,14 @@ public class WindowGraph : MonoBehaviour
         {
             if (request.valuesOfBatiments.Count > 0)
             {
-                showGraph(request.valuesOfBatiments, -1, (int _i) => "Day " + (_i + 1), (float _f) => Mathf.RoundToInt(_f) + request.unite);
-                Debug.Log("Graphique crée");
+                showGraph(request.valuesOfBatiments, -1, request.date , (float _f) => Mathf.RoundToInt(_f) + request.unite);
                 stopUpdate = true;
             }
         }
 
         foreach (GameObject gameObject in gameObjectList)
         {
+
             switch (gameObject.name)
             {
                 case "dashTemplateX":
@@ -61,7 +54,6 @@ public class WindowGraph : MonoBehaviour
                     break;
                 default:
                     TouchForScrollGraph(gameObject);
-                    Debug.Log(gameObject.name);
                     break;
             }
         }
@@ -93,12 +85,11 @@ public class WindowGraph : MonoBehaviour
      * @param getAxisLabelX : get a value IN int and modify the type of the value and have a string in OUT of the function
      * @param getAxisLabelY : same but instead of an int it s a float
      */
-    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
+    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, List<string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
     {
 
         GameObject dotConnection = null;
         //Delegate for convert the type and have a method for the result of the second type
-        if (getAxisLabelX == null) getAxisLabelX = delegate (int _i) { return _i.ToString(); };
         if (getAxisLabelY == null) getAxisLabelY = delegate (float _f) { return Mathf.RoundToInt(_f).ToString(); };
         if (maxVisibleValueAmount <= 0) maxVisibleValueAmount = valueList.Count;
 
@@ -152,8 +143,9 @@ public class WindowGraph : MonoBehaviour
             RectTransform labelX = Instantiate(labelTemplateX);
             labelX.SetParent(graphContainer, false);
             labelX.gameObject.SetActive(true);
-            labelX.anchoredPosition = new Vector2(xPosition, -7f);
-            labelX.GetComponent<Text>().text = getAxisLabelX(i); //A changer
+            labelX.anchoredPosition = new Vector2(xPosition - 50, -50f);
+            labelX.localEulerAngles = new Vector3(0, 0, 45f);
+            labelX.GetComponent<Text>().text = getAxisLabelX[i]; //A changer
             gameObjectList.Add(labelX.gameObject);
 
             //For create the dash 
@@ -163,15 +155,6 @@ public class WindowGraph : MonoBehaviour
             dashX.gameObject.SetActive(true);
             dashX.anchoredPosition = new Vector2(xPosition, -3f);
             gameObjectList.Add(dashX.gameObject);
-
-            if (xPosition > graphWidth)
-            {
-                circleGameObject.SetActive(false);
-                labelX.gameObject.SetActive(false);
-                dashX.gameObject.SetActive(false);
-                dotConnection.SetActive(false);
-                //50 d'écart en X
-            }
             xIndex++;
         }
 
@@ -237,12 +220,23 @@ public class WindowGraph : MonoBehaviour
         }
 
         if (Input.GetMouseButtonDown(0))
-        {
-           items.transform.Translate(-Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
+        { 
+            items.transform.Translate(-Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
+            //hideElements(gameObject.transform.position.x, graphContainer.anchorMin.x, graphContainer.sizeDelta.x, gameObject);
         }
         if (Input.GetMouseButtonDown(1))
         {
             items.transform.Translate(Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
+            //hideElements(gameObject.transform.position.x, graphContainer.anchorMin.x, graphContainer.sizeDelta.x, gameObject);
         }
+    }
+
+    private void hideElements(float xPosition, float minWidth , float maxWidth,GameObject gameObject)
+    {
+        if (xPosition <= minWidth || xPosition >= maxWidth)
+        {
+            gameObject.SetActive(false);
+        }
+        else gameObject.SetActive(true);
     }
 }

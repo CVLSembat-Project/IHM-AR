@@ -22,6 +22,7 @@ public class WebRequest : MonoBehaviour
     static public int batimentCount;
     static public string nameOfBatiment;
     public string unite;
+    public List<string> date;
     public List<float> valuesOfBatiments;
     public List<string> types;
 
@@ -38,7 +39,7 @@ public class WebRequest : MonoBehaviour
     void Update()
     {
         long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //Take the time of the system
-        if (currentTime - time >= 10 * 1000) //For make a request every 15s
+        if (currentTime - time >= 5 * 1000) //For make a request every 15s
         {
             //After the condition we take the current time to reinit the time
             time = currentTime;
@@ -105,6 +106,7 @@ public class WebRequest : MonoBehaviour
                             case Constante.GRAPH_ELEC + "/A/7":
                                 valuesOfBatiments.Add(mesure.valeur);
                                 unite = mesure.unite;
+                                date.Add(mesure.date.ToLongDateString());
                                 break;
                         }
                     }
@@ -129,6 +131,15 @@ public class WebRequest : MonoBehaviour
     public List<float> getValuesOfBatiments()
     {
         return valuesOfBatiments;
+    }
+
+    public void onClickChangeCategorie(string type) //Put the constante corresponding
+    {
+        bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
+        WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
+        request.categorie = type;
+        if (changedValue) changedValue = false;
+
     }
 
 }
