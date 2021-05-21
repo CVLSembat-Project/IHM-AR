@@ -13,7 +13,13 @@ public class PieChart : MonoBehaviour
     public Transform parent;
     private Text textValue;
     private bool stopUpdate = false;
-    
+    public List<GameObject> elementsOfChart;
+
+    private void Start()
+    {
+        elementsOfChart = new List<GameObject>();
+    }
+
     private void Update()
     {
         if (!stopUpdate) //For create one time a graph
@@ -71,6 +77,13 @@ public class PieChart : MonoBehaviour
             float x = 1f + (100 * Mathf.Sin(angle * Mathf.PI / 180));
             float y = -14f + (100 * Mathf.Cos(angle * Mathf.PI / 180));
             textValue.rectTransform.anchoredPosition = new Vector2(x, y);
+            elementsOfChart.Add(newWedge.gameObject);
+            elementsOfChart.Add(textValue.gameObject);
         }
+    }
+
+    public void ClearPieChart(List<GameObject> gameObjects)
+    {
+        foreach (GameObject objects in gameObjects) Destroy(objects);
     }
 }

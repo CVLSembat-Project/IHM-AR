@@ -186,7 +186,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 41, y: 38}
+  m_AnchoredPosition: {x: 40, y: 40}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &121836833
@@ -237,7 +237,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: consommationIndirecte/electricite/A/7
+          m_StringArgument: consommationIndirecte/electricite
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &121836834
@@ -437,7 +437,7 @@ GameObject:
   - component: {fileID: 351018269}
   - component: {fileID: 351018268}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ButtonBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -584,7 +584,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 198, y: 38}
+  m_AnchoredPosition: {x: 200, y: 40}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &554428572
@@ -635,7 +635,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: consommationIndirecte/gaz/A/7
+          m_StringArgument: consommationIndirecte/gaz
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &554428573
@@ -1245,9 +1245,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   URL: 
-  categorie: 
+  categorie: nbBatiments
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
+  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -1306,6 +1307,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   circleSprite: {fileID: 21300000, guid: 44408b9905f406d45aa3c9b9106b0104, type: 3}
   stopUpdate: 0
+  ButtonImage: {fileID: 21300000, guid: 2d9c1a6982acd6b4c997b59e87a3fb48, type: 3}
+  fontOfTheText: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &1465356165
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1318,10 +1321,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4109c941807f91340a31ff7374c21218, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  URL: http://172.19.6.102/API/
+  URL: http://172.19.127.12/API/
   categorie: consommationIndirecte/eau/A/7
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
+  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -1361,7 +1365,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 121, y: 38}
+  m_AnchoredPosition: {x: 120, y: 40}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1592870494
@@ -1412,7 +1416,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: consommationIndirecte/eau/A/7
+          m_StringArgument: consommationIndirecte/eau
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1592870495

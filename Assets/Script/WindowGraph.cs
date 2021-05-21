@@ -10,19 +10,24 @@ public class WindowGraph : MonoBehaviour
     //Declaration Field
     [SerializeField] private Sprite circleSprite;
     private RectTransform graphContainer;
+    private RectTransform ButtonGroup;
     private RectTransform labelTemplateX;
     private RectTransform labelTemplateY;
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
+    private List<GameObject> UIGameObjectsList;
     private WebRequest request;
     public bool stopUpdate = false;
+    public Sprite ButtonImage;
+    public Font fontOfTheText;
 
     private void Awake()
     {
         //Get container in unity and initialisation of graph
         Screen.orientation = ScreenOrientation.Landscape;
         graphContainer = GameObject.Find("GraphContainer").GetComponent<RectTransform>();
+        ButtonGroup = GameObject.Find("ButtonGroup").GetComponent<RectTransform>();
         labelTemplateX = graphContainer.Find("labelTemplateX").GetComponent<RectTransform>();
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
@@ -30,6 +35,7 @@ public class WindowGraph : MonoBehaviour
         request = GameObject.Find("Window_Graph").GetComponent<WebRequest>();
 
         gameObjectList = new List<GameObject>();
+        UIGameObjectsList = new List<GameObject>();
     }
 
     private void Update()
@@ -38,7 +44,8 @@ public class WindowGraph : MonoBehaviour
         {
             if (request.valuesOfBatiments.Count > 0)
             {
-                showGraph(request.valuesOfBatiments, -1, request.date , (float _f) => Mathf.RoundToInt(_f) + request.unite);
+                showGraph(request.valuesOfBatiments, -1, request.date, (float _f) => Mathf.RoundToInt(_f) + request.unite);
+                CreateButtonBatiment(request.getBatimentCount());
                 stopUpdate = true;
             }
         }
@@ -205,6 +212,56 @@ public class WindowGraph : MonoBehaviour
         return gameObject;
     }
 
+    private void CreateButtonBatiment(int numberOfBatiments)
+    {
+        float xOffset = 60f;
+        for(int i = 0; i < numberOfBatiments; i++)
+        {
+            //Creating the button batiment
+            GameObject gameObject = new GameObject("Button" + (char)(65 + i), typeof(Button));
+            //Set in the parent "Buttongroup"
+            gameObject.transform.SetParent(ButtonGroup, false);
+            gameObject.SetActive(true);
+            //Add an Image
+            gameObject.AddComponent<Image>();
+            //For the position of the button
+            RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2(50f, 50f);
+            rectTransform.anchorMin = new Vector2(0, 0);
+            rectTransform.anchorMax = new Vector2(0, 0);
+            rectTransform.anchoredPosition = new Vector2((ButtonGroup.rect.width / 2) + xOffset * i, 40f);
+            //Get the public sprite
+            gameObject.GetComponent<Image>().sprite = ButtonImage;
+            
+            GameObject text = new GameObject("Text" + (char)(65 + i), typeof(Text));
+            text.transform.SetParent(gameObject.transform, false);
+            Text letterOfBatiment = text.GetComponent<Text>();
+            letterOfBatiment.text = "" + (char)(65 + i);
+            letterOfBatiment.color = new Color(0, 0, 0);
+            letterOfBatiment.font = fontOfTheText;
+            letterOfBatiment.alignment = TextAnchor.MiddleCenter;
+
+            gameObject.GetComponent<Button>().onClick.AddListener(delegate {
+                request.onClickChangeBatiment(letterOfBatiment.text);
+            });
+            UIGameObjectsList.Add(gameObject);
+
+        }
+        
+    }
+
+    private void ClearUI()
+    {
+        if(UIGameObjectsList.Count != 0)
+        {
+            foreach (GameObject gameObject in UIGameObjectsList)
+            {
+                Destroy(gameObject);
+            }
+            UIGameObjectsList.Clear();
+        }
+    }
+
     private void TouchForScrollGraph(GameObject items)
     {
         Touch touch;
@@ -215,28 +272,31 @@ public class WindowGraph : MonoBehaviour
             {
                 case TouchPhase.Moved:
                     items.transform.Translate(touch.deltaPosition.x, 0, 0 * Time.deltaTime,Space.World);
+                    hideElements(items.transform.position.x, 0, graphContainer.sizeDelta.x, items);
                     break;
             }
         }
-
+#if UNITY_EDITOR
         if (Input.GetMouseButtonDown(0))
         { 
             items.transform.Translate(-Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
-            //hideElements(gameObject.transform.position.x, graphContainer.anchorMin.x, graphContainer.sizeDelta.x, gameObject);
+            hideElements(items.transform.position.x, 0, graphContainer.sizeDelta.x, items);
         }
         if (Input.GetMouseButtonDown(1))
         {
             items.transform.Translate(Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
-            //hideElements(gameObject.transform.position.x, graphContainer.anchorMin.x, graphContainer.sizeDelta.x, gameObject);
+            hideElements(items.transform.position.x, 0, graphContainer.sizeDelta.x, items);
         }
+#endif
     }
 
-    private void hideElements(float xPosition, float minWidth , float maxWidth,GameObject gameObject)
+    private void hideElements(float xPosition, float minWidth , float maxWidth, GameObject gameObject)
     {
-        if (xPosition <= minWidth || xPosition >= maxWidth)
+        if (xPosition > minWidth + 300 && xPosition < maxWidth + 300)
         {
-            gameObject.SetActive(false);
+           gameObject.SetActive(true);
         }
-        else gameObject.SetActive(true);
+        else gameObject.SetActive(false);
+        
     }
 }

@@ -20,11 +20,13 @@ public class WebRequest : MonoBehaviour
 
     //Field where we get value of JSON
     static public int batimentCount;
-    static public string nameOfBatiment;
+    public string nameOfBatiment;
     public string unite;
     public List<string> date;
     public List<float> valuesOfBatiments;
     public List<string> types;
+
+    string actualBatiment = "A";
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -108,6 +110,8 @@ public class WebRequest : MonoBehaviour
                                 unite = mesure.unite;
                                 date.Add(mesure.date.ToLongDateString());
                                 break;
+                            default:
+                                break;
                         }
                     }
 
@@ -137,9 +141,17 @@ public class WebRequest : MonoBehaviour
     {
         bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
         WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
-        request.categorie = type;
+        /*if (type.Contains("consommationIndirecte"))*/ request.categorie = type + "/A/7";
+        //else request.categorie = request.categorie.Replace("A", type);
         if (changedValue) changedValue = false;
+    }
 
+    public void onClickChangeBatiment(string newBatiment)
+    {
+        bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
+        WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
+        request.categorie = request.categorie.Replace(actualBatiment, newBatiment);
+        actualBatiment = newBatiment;
     }
 
 }
