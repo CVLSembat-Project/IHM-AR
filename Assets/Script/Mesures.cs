@@ -15,4 +15,6 @@ public class Mesures
     public int nbBatiments { get; set; }
     public float pourcentage { get; set; }
     public string nomType { get; set; }
+
+    public float ValeurParjour { get; set; }
 }

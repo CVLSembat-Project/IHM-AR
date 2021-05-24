@@ -20,13 +20,15 @@ public class WebRequest : MonoBehaviour
 
     //Field where we get value of JSON
     static public int batimentCount;
-    public string nameOfBatiment;
+    static public string nameOfBatiment = "A";
+    static public string numberOfDay = "7";
     public string unite;
     public List<string> date;
     public List<float> valuesOfBatiments;
     public List<string> types;
 
     string actualBatiment = "A";
+    string actualNumberOfDay = "7";
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -103,18 +105,20 @@ public class WebRequest : MonoBehaviour
                                 valuesOfBatiments.Add(Mathf.Round(mesure.pourcentage));
                                 types.Add(mesure.nomType);
                                 break;
-                            case Constante.GRAPH_GAZ + "/A/7":
-                            case Constante.GRAPH_EAU + "/A/7":
-                            case Constante.GRAPH_ELEC + "/A/7":
-                                valuesOfBatiments.Add(mesure.valeur);
-                                unite = mesure.unite;
-                                date.Add(mesure.date.ToLongDateString());
-                                break;
                             default:
                                 break;
                         }
+                        //Out the switch because this version of C# / Visual Studio only accept constant in switch
+                        if ((categorie == Constante.GRAPH_ELEC + "/" + nameOfBatiment + "/" + numberOfDay)
+                            || (categorie == Constante.GRAPH_EAU + "/" + nameOfBatiment + "/" + numberOfDay)
+                            || (categorie == Constante.GRAPH_GAZ + "/" + nameOfBatiment + "/" + numberOfDay))
+                        {
+                            valuesOfBatiments.Add(mesure.ValeurParjour);
+                            unite = mesure.unite;
+                            date.Add(mesure.date.ToLongDateString());
+                            Debug.Log(mesure.date.ToLongDateString());
+                        }
                     }
-
                 }
 
             }
@@ -141,8 +145,7 @@ public class WebRequest : MonoBehaviour
     {
         bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
         WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
-        /*if (type.Contains("consommationIndirecte"))*/ request.categorie = type + "/A/7";
-        //else request.categorie = request.categorie.Replace("A", type);
+        request.categorie = type + "/A/7";
         if (changedValue) changedValue = false;
     }
 
@@ -151,7 +154,20 @@ public class WebRequest : MonoBehaviour
         bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
         WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
         request.categorie = request.categorie.Replace(actualBatiment, newBatiment);
+        nameOfBatiment = newBatiment;
         actualBatiment = newBatiment;
+        if (changedValue) changedValue = false;
+    }
+
+    public void onClickChangeNumberOfDay(string newNumber)
+    {
+        bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
+        WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
+        request.categorie = request.categorie.Replace(actualNumberOfDay, newNumber);
+        numberOfDay = newNumber;
+        actualNumberOfDay = newNumber;
+        if (changedValue) changedValue = false;
+
     }
 
 }

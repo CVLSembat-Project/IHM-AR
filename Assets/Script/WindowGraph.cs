@@ -44,6 +44,7 @@ public class WindowGraph : MonoBehaviour
         {
             if (request.valuesOfBatiments.Count > 0)
             {
+                ClearUI();
                 showGraph(request.valuesOfBatiments, -1, request.date, (float _f) => Mathf.RoundToInt(_f) + request.unite);
                 CreateButtonBatiment(request.getBatimentCount());
                 stopUpdate = true;
@@ -55,11 +56,11 @@ public class WindowGraph : MonoBehaviour
 
             switch (gameObject.name)
             {
-                case "dashTemplateX":
                 case "dashTemplateY":
                 case "labelTemplateY":
                     break;
                 default:
+                    hideElements(gameObject.transform.position.x, 0, graphContainer.sizeDelta.x, gameObject);
                     TouchForScrollGraph(gameObject);
                     break;
             }
@@ -163,6 +164,7 @@ public class WindowGraph : MonoBehaviour
             dashX.anchoredPosition = new Vector2(xPosition, -3f);
             gameObjectList.Add(dashX.gameObject);
             xIndex++;
+
         }
 
         int separatorCount = 10; //Will change soon
@@ -280,12 +282,10 @@ public class WindowGraph : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         { 
             items.transform.Translate(-Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
-            hideElements(items.transform.position.x, 0, graphContainer.sizeDelta.x, items);
         }
         if (Input.GetMouseButtonDown(1))
         {
             items.transform.Translate(Input.mousePosition.x * Time.deltaTime,0,0,Space.World);
-            hideElements(items.transform.position.x, 0, graphContainer.sizeDelta.x, items);
         }
 #endif
     }
