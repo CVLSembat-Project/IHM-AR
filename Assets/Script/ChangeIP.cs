@@ -18,10 +18,8 @@ public class ChangeIP : MonoBehaviour
         string text = inputField.text;
         if (string.IsNullOrEmpty(text))
         {
-            Debug.Log("Error input is EMPTY");
             return;
         }
-        Debug.Log(text);
         IP = text;
         PlayerPrefs.SetString("adresse", IP);
     }

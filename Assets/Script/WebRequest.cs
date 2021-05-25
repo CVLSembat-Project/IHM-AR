@@ -3,6 +3,7 @@ using System;
 using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using static Mesures;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ public class WebRequest : MonoBehaviour
     static public int batimentCount;
     static public string nameOfBatiment = "A";
     static public string numberOfDay = "7";
+    static public float seuil;
     public string unite;
     public List<string> date;
     public List<float> valuesOfBatiments;
@@ -37,6 +39,8 @@ public class WebRequest : MonoBehaviour
     {
         URL = "http://" + PlayerPrefs.GetString("adresse") + "/API/";
         StartCoroutine(GetRequest(URL + categorie));
+        if(SceneManager.GetActiveScene().name == "Menu2D") textOfElements = GameObject.Find("Status").GetComponent<Text>();
+
     }
 
     // Update is called once per frame
@@ -69,7 +73,8 @@ public class WebRequest : MonoBehaviour
             while (!webRequest.isDone) yield return null;
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                textOfElements.text = webRequest.error;
+                textOfElements.text = "Vous n'êtes pas connecté";
+                textOfElements.color = new Color(255, 25, 25);
             }
             else
             {
@@ -79,11 +84,13 @@ public class WebRequest : MonoBehaviour
                 valuesOfBatiments = new List<float>();
                 types = new List<string>();
                 slider = gameObject.GetComponent<Slider>();
+                date = new List<string>();
 
                 foreach (Mesures mesure in mesures)
                 {
                     if (webRequest.responseCode == 200) //If the http response is 200, we get the JSON data from API-REST
                     {
+                        if (SceneManager.GetActiveScene().name == "Menu2D") textOfElements.text = "Statut : Connecté";
                         switch (categorie) //For sorts the differents path
                         {
                             case Constante.ELECTRICITY:
@@ -116,7 +123,13 @@ public class WebRequest : MonoBehaviour
                             valuesOfBatiments.Add(mesure.ValeurParjour);
                             unite = mesure.unite;
                             date.Add(mesure.date.ToLongDateString());
-                            Debug.Log(mesure.date.ToLongDateString());
+                        }
+
+                        if(categorie == Constante.SEUIL_ELEC + "/" + nameOfBatiment 
+                            || categorie == Constante.SEUIL_EAU + "/" + nameOfBatiment 
+                            || categorie == Constante.SEUIL_GAZ + "/" + nameOfBatiment)
+                        {
+                            seuil = mesure.valeurSeuil;
                         }
                     }
                 }
@@ -141,11 +154,18 @@ public class WebRequest : MonoBehaviour
         return valuesOfBatiments;
     }
 
+    public float getSeuil()
+    {
+        return seuil;
+    }
+
     public void onClickChangeCategorie(string type) //Put the constante corresponding
     {
         bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
         WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
-        request.categorie = type + "/A/7";
+        WebRequest request2 = GameObject.Find("ScriptGameObject").GetComponent<WebRequest>();
+        request.categorie = "consommationIndirecte/valeurParJour/" + type + "/" + nameOfBatiment + "/" + numberOfDay;
+        request2.categorie = "seuil/" + type + "/" + nameOfBatiment;
         if (changedValue) changedValue = false;
     }
 

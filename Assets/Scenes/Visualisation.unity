@@ -165,7 +165,6 @@ MonoBehaviour:
   categorie: consommationIndirecte/totalType
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -930,7 +929,6 @@ MonoBehaviour:
   categorie: consommationDirecte/electricite
   textOfElements: {fileID: 1701580935}
   slider: {fileID: 639888645}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -1219,7 +1217,7 @@ MonoBehaviour:
     type: 3}
   textPrefab: {fileID: 3043401613021171217, guid: 044e2f5d63a13f24e873c97597d3aa87,
     type: 3}
-  parent: {fileID: 50237743}
+  parent: {fileID: 782542171}
   elementsOfChart: []
 --- !u!1 &947060912
 GameObject:
@@ -2166,7 +2164,6 @@ MonoBehaviour:
   categorie: consommationDirecte/eau
   textOfElements: {fileID: 1826412421844788809}
   slider: {fileID: 1348521528}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -2575,7 +2572,6 @@ MonoBehaviour:
   categorie: consommationIndirecte/totalParBatiment/pourcentageParBatiment/electricite/7
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -2744,7 +2740,6 @@ MonoBehaviour:
   categorie: consommationDirecte/gaz
   textOfElements: {fileID: 6990311528064637226}
   slider: {fileID: 1729212057}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -3479,7 +3474,6 @@ MonoBehaviour:
   categorie: consommationIndirecte/totalParBatiment/pourcentageParBatiment/eau/7
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []
@@ -3891,7 +3885,6 @@ MonoBehaviour:
   categorie: consommationIndirecte/totalParBatiment/pourcentageParBatiment/gaz/7
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
-  nameOfBatiment: 
   unite: 
   date: []
   valuesOfBatiments: []

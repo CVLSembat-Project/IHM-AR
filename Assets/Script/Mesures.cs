@@ -17,4 +17,6 @@ public class Mesures
     public string nomType { get; set; }
 
     public float ValeurParjour { get; set; }
+
+    public float valeurSeuil { get; set; }
 }

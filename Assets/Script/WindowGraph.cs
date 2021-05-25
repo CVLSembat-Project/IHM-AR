@@ -45,7 +45,7 @@ public class WindowGraph : MonoBehaviour
             if (request.valuesOfBatiments.Count > 0)
             {
                 ClearUI();
-                showGraph(request.valuesOfBatiments, -1, request.date, (float _f) => Mathf.RoundToInt(_f) + request.unite);
+                showGraph(request.valuesOfBatiments, -1, request.getSeuil(), request.date, (float _f) => Mathf.RoundToInt(_f) + request.unite);
                 CreateButtonBatiment(request.getBatimentCount());
                 stopUpdate = true;
             }
@@ -93,7 +93,7 @@ public class WindowGraph : MonoBehaviour
      * @param getAxisLabelX : get a value IN int and modify the type of the value and have a string in OUT of the function
      * @param getAxisLabelY : same but instead of an int it s a float
      */
-    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, List<string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
+    private void showGraph(List<float> valueList, int maxVisibleValueAmount = -1, float seuil = 0, List<string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null)
     {
 
         GameObject dotConnection = null;
@@ -184,7 +184,15 @@ public class WindowGraph : MonoBehaviour
             dashY.name = "dashTemplateY";
             dashY.SetParent(graphContainer, false);
             dashY.gameObject.SetActive(true);
-            dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
+            if (seuil >= yMaximum && seuil <= yMaximum)
+            {
+                dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
+                dashY.gameObject.GetComponent<Image>().color = new Color(255, 0, 0);
+            }
+            else
+            {
+                dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
+            }
             gameObjectList.Add(dashY.gameObject);
 
         }

@@ -121,6 +121,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 11238397}
+  - component: {fileID: 11238398}
   m_Layer: 5
   m_Name: ButtonGroup
   m_TagString: Untagged
@@ -151,6 +152,27 @@ RectTransform:
   m_AnchoredPosition: {x: 400, y: 50}
   m_SizeDelta: {x: 800, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &11238398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 11238396}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4109c941807f91340a31ff7374c21218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  URL: 
+  categorie: nbBatiments
+  textOfElements: {fileID: 0}
+  slider: {fileID: 0}
+  unite: 
+  seuil: 0
+  date: []
+  valuesOfBatiments: []
+  types: []
 --- !u!1 &121836831
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,7 +259,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: consommationIndirecte/ValeurParJour/electricite
+          m_StringArgument: electricite
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &121836834
@@ -635,7 +657,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: consommationIndirecte/ValeurParJour/gaz
+          m_StringArgument: gaz
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &554428573
@@ -1572,10 +1594,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   URL: 
-  categorie: nbBatiments
+  categorie: seuil/eau/A
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
   unite: 
+  seuil: 0
   date: []
   valuesOfBatiments: []
   types: []
@@ -1725,10 +1748,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   URL: http://172.19.127.12/API/
-  categorie: consommationIndirecte/ValeurParJour/eau/A/7
+  categorie: consommationIndirecte/valeurParJour/eau/A/7
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
   unite: 
+  seuil: 0
   date: []
   valuesOfBatiments: []
   types: []
@@ -1818,7 +1842,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: consommationIndirecte/ValeurParJour/eau
+          m_StringArgument: eau
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1592870495

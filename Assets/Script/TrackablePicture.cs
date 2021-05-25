@@ -19,7 +19,8 @@ public class TrackablePicture : DefaultTrackableEventHandler
     protected override void OnTrackingLost()
     {
         base.OnTrackingLost();
-        if(chart.elementsOfChart.Count > 0) chart.ClearPieChart(chart.elementsOfChart);
+        chart = GameObject.Find("PieChartForImageTarget").GetComponent<PieChart>();
+        if (chart.elementsOfChart.Count > 0) chart.ClearPieChart(chart.elementsOfChart);
     }
 
 }
