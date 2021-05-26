@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f46bfdd37bb171745bb9b575ed1c00ba
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - circleSprite: {fileID: 21300000, guid: 44408b9905f406d45aa3c9b9106b0104, type: 3}
+  - ButtonImage: {fileID: 21300000, guid: 2d9c1a6982acd6b4c997b59e87a3fb48, type: 3}
+  - fontOfTheText: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

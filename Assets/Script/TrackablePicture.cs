@@ -11,17 +11,16 @@ public class TrackablePicture : DefaultTrackableEventHandler
     protected override void OnTrackingFound()
     {
         base.OnTrackingFound();
-        chart.enabled = true;
         request = GetComponent<WebRequest>();
         chart = GameObject.Find("PieChartForImageTarget").GetComponent<PieChart>();
-        chart.makeGraph(request.percentageOfBatiments, request.percentageOfBatiments.Count);
+        chart.makeGraph(request.valuesOfBatiments, request.valuesOfBatiments.Count);
     }
 
     protected override void OnTrackingLost()
     {
         base.OnTrackingLost();
         chart = GameObject.Find("PieChartForImageTarget").GetComponent<PieChart>();
-        chart.enabled = false;
+        if (chart.elementsOfChart.Count > 0) chart.ClearPieChart(chart.elementsOfChart);
     }
 
 }

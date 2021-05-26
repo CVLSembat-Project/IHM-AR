@@ -20,4 +20,5 @@ public class ToggleMenu : MonoBehaviour
         //We activate the background
         else background.GetComponent<Renderer>().enabled = true;
     }
+
 }

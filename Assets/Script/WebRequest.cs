@@ -3,6 +3,7 @@ using System;
 using UnityEngine.Networking;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using static Mesures;
 using System.Collections.Generic;
@@ -20,9 +21,16 @@ public class WebRequest : MonoBehaviour
 
     //Field where we get value of JSON
     static public int batimentCount;
-    static public string nameOfBatiment;
-    public List<float> percentageOfBatiments;
+    static public string nameOfBatiment = "A";
+    static public string numberOfDay = "7";
+    static public float seuil;
+    public string unite;
+    public List<string> date;
+    public List<float> valuesOfBatiments;
     public List<string> types;
+
+    string actualBatiment = "A";
+    string actualNumberOfDay = "7";
 
     //Array to get lot of JSON object
     static List<Mesures> mesures = new List<Mesures>();
@@ -31,13 +39,15 @@ public class WebRequest : MonoBehaviour
     {
         URL = "http://" + PlayerPrefs.GetString("adresse") + "/API/";
         StartCoroutine(GetRequest(URL + categorie));
+        if(SceneManager.GetActiveScene().name == "Menu2D") textOfElements = GameObject.Find("Status").GetComponent<Text>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
         long currentTime = DateTimeOffset.Now.ToUnixTimeMilliseconds(); //Take the time of the system
-        if (currentTime - time >= 10 * 1000) //For make a request every 15s
+        if (currentTime - time >= 5 * 1000) //For make a request every 15s
         {
             //After the condition we take the current time to reinit the time
             time = currentTime;
@@ -63,21 +73,24 @@ public class WebRequest : MonoBehaviour
             while (!webRequest.isDone) yield return null;
             if (webRequest.isNetworkError || webRequest.isHttpError)
             {
-                textOfElements.text = webRequest.error;
+                textOfElements.text = "Vous n'êtes pas connecté";
+                textOfElements.color = new Color(255, 25, 25);
             }
             else
             {
                 //Deserialize JSON Object
                 mesures = JsonConvert.DeserializeObject<List<Mesures>>(webRequest.downloadHandler.text);
                 //Initialization
-                percentageOfBatiments = new List<float>();
+                valuesOfBatiments = new List<float>();
                 types = new List<string>();
                 slider = gameObject.GetComponent<Slider>();
+                date = new List<string>();
 
                 foreach (Mesures mesure in mesures)
                 {
                     if (webRequest.responseCode == 200) //If the http response is 200, we get the JSON data from API-REST
                     {
+                        if (SceneManager.GetActiveScene().name == "Menu2D") textOfElements.text = "Statut : Connecté";
                         switch (categorie) //For sorts the differents path
                         {
                             case Constante.ELECTRICITY:
@@ -93,15 +106,32 @@ public class WebRequest : MonoBehaviour
                             case Constante.PERCENTAGE + "/gaz/7":
                             case Constante.PERCENTAGE + "/eau/7":
                             case Constante.PERCENTAGE + "/electricite/7":
-                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                valuesOfBatiments.Add(Mathf.Round(mesure.pourcentage));
                                 break;
                             case Constante.TYPE_PERCENTAGE:
-                                percentageOfBatiments.Add(Mathf.Round(mesure.pourcentage));
+                                valuesOfBatiments.Add(Mathf.Round(mesure.pourcentage));
                                 types.Add(mesure.nomType);
                                 break;
+                            default:
+                                break;
+                        }
+                        //Out the switch because this version of C# / Visual Studio only accept constant in switch
+                        if ((categorie == Constante.GRAPH_ELEC + "/" + nameOfBatiment + "/" + numberOfDay)
+                            || (categorie == Constante.GRAPH_EAU + "/" + nameOfBatiment + "/" + numberOfDay)
+                            || (categorie == Constante.GRAPH_GAZ + "/" + nameOfBatiment + "/" + numberOfDay))
+                        {
+                            valuesOfBatiments.Add(mesure.ValeurParjour);
+                            unite = mesure.unite;
+                            date.Add(mesure.date.ToLongDateString());
+                        }
+
+                        if(categorie == Constante.SEUIL_ELEC + "/" + nameOfBatiment 
+                            || categorie == Constante.SEUIL_EAU + "/" + nameOfBatiment 
+                            || categorie == Constante.SEUIL_GAZ + "/" + nameOfBatiment)
+                        {
+                            seuil = mesure.valeurSeuil;
                         }
                     }
-
                 }
 
             }
@@ -119,9 +149,45 @@ public class WebRequest : MonoBehaviour
         return nameOfBatiment;
     }
 
-    public List<float> getPercentageOfBatiment()
+    public List<float> getValuesOfBatiments()
     {
-        return percentageOfBatiments;
+        return valuesOfBatiments;
+    }
+
+    public float getSeuil()
+    {
+        return seuil;
+    }
+
+    public void onClickChangeCategorie(string type) //Put the constante corresponding
+    {
+        bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
+        WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
+        WebRequest request2 = GameObject.Find("ScriptGameObject").GetComponent<WebRequest>();
+        request.categorie = "consommationIndirecte/valeurParJour/" + type + "/" + nameOfBatiment + "/" + numberOfDay;
+        request2.categorie = "seuil/" + type + "/" + nameOfBatiment;
+        if (changedValue) changedValue = false;
+    }
+
+    public void onClickChangeBatiment(string newBatiment)
+    {
+        bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
+        WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
+        request.categorie = request.categorie.Replace(actualBatiment, newBatiment);
+        nameOfBatiment = newBatiment;
+        actualBatiment = newBatiment;
+        if (changedValue) changedValue = false;
+    }
+
+    public void onClickChangeNumberOfDay(string newNumber)
+    {
+        bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
+        WebRequest request = GameObject.Find("Window_Graph").GetComponentInParent<WebRequest>();
+        request.categorie = request.categorie.Replace(actualNumberOfDay, newNumber);
+        numberOfDay = newNumber;
+        actualNumberOfDay = newNumber;
+        if (changedValue) changedValue = false;
+
     }
 
 }
