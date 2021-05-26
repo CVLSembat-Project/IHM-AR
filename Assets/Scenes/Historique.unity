@@ -169,7 +169,6 @@ MonoBehaviour:
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
   unite: 
-  seuil: 0
   date: []
   valuesOfBatiments: []
   types: []
@@ -1598,7 +1597,6 @@ MonoBehaviour:
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
   unite: 
-  seuil: 0
   date: []
   valuesOfBatiments: []
   types: []
@@ -1752,7 +1750,6 @@ MonoBehaviour:
   textOfElements: {fileID: 0}
   slider: {fileID: 0}
   unite: 
-  seuil: 0
   date: []
   valuesOfBatiments: []
   types: []
@@ -2169,9 +2166,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '365 jours
-
-'
+  m_Text: 365 jours
 --- !u!222 &1954303871
 CanvasRenderer:
   m_ObjectHideFlags: 0

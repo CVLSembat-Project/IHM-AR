@@ -169,6 +169,7 @@ public class WindowGraph : MonoBehaviour
 
         int separatorCount = 10; //Will change soon
         //Loop for create Y axis label and dash
+        bool seuilChecked = false;
         for (int i = 0; i <= separatorCount; i++)
         {
             RectTransform labelY = Instantiate(labelTemplateY);
@@ -184,15 +185,16 @@ public class WindowGraph : MonoBehaviour
             dashY.name = "dashTemplateY";
             dashY.SetParent(graphContainer, false);
             dashY.gameObject.SetActive(true);
-            if (seuil >= yMaximum && seuil <= yMaximum)
+            if (!seuilChecked)
             {
-                dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
-                dashY.gameObject.GetComponent<Image>().color = new Color(255, 0, 0);
+                if(seuil <= normalizedValue * yMaximum)
+                {
+                    dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
+                    dashY.gameObject.GetComponent<Image>().color = new Color(255, 0, 0);
+                    seuilChecked = true;
+                }
             }
-            else
-            {
-                dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
-            }
+            dashY.anchoredPosition = new Vector2(-4f, normalizedValue * graphHeight);
             gameObjectList.Add(dashY.gameObject);
 
         }
