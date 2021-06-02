@@ -25,6 +25,7 @@ public class WebRequest : MonoBehaviour
     static public string numberOfDay = "7";
     static public float seuil;
     public string unite;
+    static public string actualtype = "eau";
     public List<string> date;
     public List<float> valuesOfBatiments;
     public List<string> types;
@@ -159,6 +160,11 @@ public class WebRequest : MonoBehaviour
         return seuil;
     }
 
+    public string getActualType()
+    {
+        return actualtype;
+    }
+
     public void onClickChangeCategorie(string type) //Put the constante corresponding
     {
         bool changedValue = GameObject.Find("Window_Graph").GetComponentInParent<WindowGraph>().stopUpdate = false;
@@ -166,6 +172,7 @@ public class WebRequest : MonoBehaviour
         WebRequest request2 = GameObject.Find("ScriptGameObject").GetComponent<WebRequest>();
         request.categorie = "consommationIndirecte/valeurParJour/" + type + "/" + nameOfBatiment + "/" + numberOfDay;
         request2.categorie = "seuil/" + type + "/" + nameOfBatiment;
+        actualtype = type;
         if (changedValue) changedValue = false;
     }
 

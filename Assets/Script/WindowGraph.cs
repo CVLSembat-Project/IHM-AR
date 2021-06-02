@@ -18,6 +18,7 @@ public class WindowGraph : MonoBehaviour
     private List<GameObject> gameObjectList;
     private List<GameObject> UIGameObjectsList;
     private WebRequest request;
+    private Text type;
     public bool stopUpdate = false;
     public Sprite ButtonImage;
     public Font fontOfTheText;
@@ -33,7 +34,7 @@ public class WindowGraph : MonoBehaviour
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
         request = GameObject.Find("Window_Graph").GetComponent<WebRequest>();
-
+        type = GameObject.Find("Type").GetComponent<Text>();
         gameObjectList = new List<GameObject>();
         UIGameObjectsList = new List<GameObject>();
     }
@@ -47,6 +48,7 @@ public class WindowGraph : MonoBehaviour
                 ClearUI();
                 showGraph(request.valuesOfBatiments, -1, request.getSeuil(), request.date, (float _f) => Mathf.RoundToInt(_f) + request.unite);
                 CreateButtonBatiment(request.getBatimentCount());
+                type.text = "Types : " + request.getActualType();
                 stopUpdate = true;
             }
         }
